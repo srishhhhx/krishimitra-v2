@@ -74,3 +74,4 @@ htmlcov/
 .coverage.Srishtis-MacBook-Air.local.39602.XsDSTLfx
 
 tests/
+models/trained_model.keras
