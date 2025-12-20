@@ -1,0 +1,974 @@
+{
+  "timestamp": "2025-10-25T03:39:25.951201",
+  "summary": {
+    "total_queries": 22,
+    "successful": 22,
+    "failed": 0,
+    "by_type": {
+      "Good": {
+        "total": 12,
+        "successful": 12,
+        "failed": 0
+      },
+      "Bad": {
+        "total": 5,
+        "successful": 5,
+        "failed": 0
+      },
+      "Hard": {
+        "total": 5,
+        "successful": 5,
+        "failed": 0
+      }
+    },
+    "avg_response_time_ms": 2314.56
+  },
+  "results": [
+    {
+      "query_number": 1,
+      "query": "What is the NPK recommendation for hybrid maize in Himachal Pradesh based on the 2021 Kharif advisory?",
+      "type": "Good",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 4732.48,
+      "answer": "KrishiMitra here! While the provided documents mention NPK recommendations for hybrid maize, they do not specify the exact NPK recommendation for Himachal Pradesh based on the 2021 Kharif advisory.\n\nHowever, I can provide you with the NPK recommendations mentioned for hybrid maize under **irrigated and rainfed conditions** from the provided context. These might be generally applicable or useful for comparison:\n\n**Under Irrigated Conditions:**\n\n*   **Urea:** 8.15 kg per kanal\n*   **MOP:** 6.5 kg per kanal\n*   **Sulphate:** 1.0 kg per kanal\n\n**Under Rainfed Conditions:**\n\n*   **Urea:** 5 kg per kanal\n*   **MOP:** 4.35 kg per kanal\n*   **Sulphate:** 0.75 to 0.5 kg per kanal\n\nPlease note that these recommendations are from the provided agricultural documents and may not be specific to the 2021 Kharif advisory for Himachal Pradesh. For the most accurate and localized recommendations, it's always best to consult your local agricultural extension office or Krishi Vigyan Kendra (KVK).",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "03b567dd-7d99-4bb3-bbf6-2317ee85e531",
+          "score": 0.66409111
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "7be32769-b40a-4308-aee9-17614f16f4ea",
+          "score": 0.647279739
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "1dad8b15-9519-4e11-858c-6e51cee4722e",
+          "score": 0.641809464
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "26d1492d-3d86-4e6d-a06d-97b7e2eff43b",
+          "score": 0.632681847
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "b465243b-a241-4b89-8869-944ac6983ac1",
+          "score": 0.605646133
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 4728
+    },
+    {
+      "query_number": 2,
+      "query": "How can I control white grubs in maize in Himachal Pradesh?",
+      "type": "Good",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 1859.69,
+      "answer": "To control white grubs in maize in Himachal Pradesh, you can take the following measures:\n\n**Preventive Measures:**\n\n*   **Deep Ploughing:** Deep ploughing of fields before sowing is recommended. This helps expose the grubs and pupae to the sun and predators, killing them. This is particularly important for Kharif maize. (Source 4)\n*   **Seed Treatment:** Treat your maize seeds with Bavistin. (Source 1)\n\n**Chemical Control:**\n\n*   **Pre-sowing Application:** Mix **cypermethrin 10EC @ 2.5 ml/ha** in 60-70 kg of sandy soil and apply it before sowing. (Source 1)\n\n**Note:** The provided context mentions white grubs as serious pests of maize. (Source 1)",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "d4c981cb-353c-4dd8-963e-ace65d64a3ec",
+          "score": 0.628682137
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "664d442c-ba42-4e9e-a25e-e4e2330528cc",
+          "score": 0.610871315
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "ae96746c-580a-4186-8ea0-dba2b302c340",
+          "score": 0.608802736
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "a61ec35d-296c-49c1-a39b-65fab5020d4c",
+          "score": 0.606672287
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "2a4a5bdd-1151-4d27-8183-65f561e09006",
+          "score": 0.58962822
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 1856
+    },
+    {
+      "query_number": 3,
+      "query": "What herbicide is recommended for weed control in transplanted rice in Arunachal Pradesh?",
+      "type": "Good",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 2810.4,
+      "answer": "For weed control in transplanted rice, several herbicides are recommended. While the context doesn't specifically mention Arunachal Pradesh, it provides general recommendations for transplanted rice that would be applicable.\n\n**Herbicides recommended for transplanted rice:**\n\n*   **Butachlor:** You can apply 30 kg of butachlor granules per hectare in 4-5 cm standing water at 2-3 days after transplanting. Alternatively, 3.0 liters of Butachlor 50 EC can be used.\n*   **Pretilachlor with safener:** This can be applied at 750 g active ingredient per hectare.\n*   **Thiobencarb:** 15 kg of thiobencarb granules per hectare can be applied in 4-5 cm standing water at 2-3 days after transplanting. Thiobencarb EC is also an option.\n*   **Anilphos 30 EC:** 325 ml per hectare can be used.\n*   **Oxy diazeril 80% WP:** 2.0 liters per hectare can be applied after mixing with sand.\n*   **Bispyribac sodium:** 250 ml per hectare can be used for managing mixed weed flora, applied 25 days after transplanting.\n*   **Metsulfuron and Chlorimuron:** A ready mix of 20 g of these can be used for broadleaf weed management.\n*   **Ethoxysulphuron 15% WG:** 125 g or 125 g of ready mix of metsulfuron and chlorimuron can be used.\n*   **Penoxsulam:** 25 g per hectare can be used.\n\n**Important considerations for herbicide application:**\n\n*   Herbicides are generally applied in standing water.\n*   The timing of application is crucial, usually within a few days after transplanting.\n*   For managing broadleaf weeds, specific mixtures like metsulfuron and chlorimuron are recommended.\n*   For mixed weed flora, bispyribac sodium is effective.\n\n**General weed management practices:**\n\n*   Manual weeding is also practiced as a method of weed control, though it requires more labor.\n\nRemember to always follow the specific instructions on the herbicide package for accurate dosage and safe application.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "daea897b-e6c5-4d6e-b386-5c99ac85d5f6",
+          "score": 0.781905174
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "26879c2d-6177-4339-838f-538d4657373d",
+          "score": 0.727054596
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "bb356e9e-2d57-45d6-9a1c-8776608d785d",
+          "score": 0.721492767
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "a95a3ad7-a923-404f-9c5b-159dd5551dbb",
+          "score": 0.716617584
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "c1be8a11-d43f-4bb9-8db8-c9a1f422eb0e",
+          "score": 0.70544529
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 2806
+    },
+    {
+      "query_number": 4,
+      "query": "What is the recommended seed treatment for foot rot in Basmati rice in Punjab?",
+      "type": "Good",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 2133.1,
+      "answer": "For the control of foot rot disease in Basmati rice, it is recommended to treat the seeds and seedlings. You can smear the seeds with **Trichoderma harzianum at a rate of 15 grams**. Additionally, for seedling root dip, use a solution of **Trichoderma harzianum at 15 grams per litre of water before transplanting**. This treatment is mandatory to control dreaded diseases like foot rot.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "9a80acad-dcb2-4e56-9717-89ebd6b97ad2",
+          "score": 0.69207
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "9f44b700-e877-47d8-b912-ec170ccc0833",
+          "score": 0.678452492
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "4b6c8fb7-59fa-487a-a711-f11254b53fd0",
+          "score": 0.647802353
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "0249f00b-ca9b-4e21-821d-dfa8cab00f2c",
+          "score": 0.62456131
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "fb1755c3-5331-4dec-b3c9-ec2da002515b",
+          "score": 0.618958533
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 2130
+    },
+    {
+      "query_number": 5,
+      "query": "When should cotton sowing be completed in Punjab?",
+      "type": "Good",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 2074.39,
+      "answer": "Cotton sowing in Punjab should be completed by the **third week of May** if you have irrigation facilities. For farmers with irrigation, it is advised to start sowing Bt. Cotton during the **second fortnight of May**.\n\nGeneral guidelines for cotton sowing in the Kharif season suggest that for obtaining high yields, sowing can be done between the **first week of May to the third week of May**, depending on irrigation water availability. However, some sources indicate that the first fortnight of June is also a suitable time for sowing. For desi cotton varieties, the ideal sowing time is from **mid-April to the first week of May**.\n\nWhen sowing, ensure that the seeds are treated. For instance, seeds can be treated with biofertilizers like Trichoderma @ 4 g/kg of seed and PSB @ 100 ml/10 kg of seed before sowing. Delinted seeds of improved cotton varieties should be used at a rate of 15-20 kg per hectare. For American cotton, the seed rate is 12-16 kg/ha, and for desi cotton, it's 15-16 kg/ha. Bt cotton requires about 1.5 kg of seed per hectare.\n\nIt is also recommended to sow the crop in lines with a spacing of 67.5 cm between rows. Plant-to-plant spacing can vary, with some recommendations suggesting 25 cm for desi cotton and 30 cm for Bt cotton.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "b21efddb-de69-4387-8f77-169153f2d67d",
+          "score": 0.657055855
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "f4735b61-1485-49c5-902b-e7f38baddb02",
+          "score": 0.624144554
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "a70e347b-e78e-43af-b205-207c06e2e62e",
+          "score": 0.610372543
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "b094f366-1c75-4cba-8e7a-434a21de44a7",
+          "score": 0.603934288
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "d46a6b05-2530-45a4-a24d-d68d1a2413b9",
+          "score": 0.602283478
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 2071
+    },
+    {
+      "query_number": 6,
+      "query": "How to manage fall armyworm in maize in Punjab?",
+      "type": "Good",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 3595.64,
+      "answer": "Fall Armyworm (FAW) is a significant pest for maize crops. Here's how you can manage it in your maize fields:\n\n**Preventive Measures:**\n\n*   **Deep Summer Ploughing:** This is a crucial step recommended before the monsoon rains. It helps to expose the pupae and larvae of pests like the Fall Armyworm to the sun, killing them.\n*   **Crop Rotation:** Rotating maize with other crops can help break the life cycle of the Fall Armyworm.\n*   **Dry Sowing or Sowing with Mechanized Sowing:** These methods can help reduce the initial infestation of Fall Armyworm.\n*   **Ridge and Furrow Method:** Adopting this method of bed preparation can also help in managing the pest.\n*   **Trap Crops:** Planting fodder maize as a trap crop can help monitor and manage FAW.\n\n**Monitoring and Early Detection:**\n\n*   **Regular Scouting:** Consistently check your maize plants for signs of Fall Armyworm infestation.\n*   **Monitor Egg Masses and Neonate Larvae:** Look for egg masses and newly hatched larvae, especially in the whorls of affected maize plants.\n*   **Yellow Sticky Traps:** Installing yellow sticky traps with suitable lures can help in monitoring the pest population.\n\n**Management Practices:**\n\n*   **Destroy Egg Masses and Larvae:** Manually remove and destroy egg masses and larvae found on the plants. Egg masses are often covered with hairs.\n*   **Kerosene Water:** A mixture of kerosene and water can be used to kill egg masses and neonate larvae.\n*   **Seed Treatment:** Treating seeds with Cyantranilipro + Thiomethoxam @ 4 ml/kg of seeds is recommended to protect against Fall Army Worm. Biopriming/Seed treatment with Trichoderma (10g/kg) is also beneficial.\n*   **Chemical Control:**\n    *   **NSKE or Azadirachtin:** Extract of neem kernel (NSKE) or Azadirachtin can be sprayed in water to kill eggs and neonate larvae.\n    *   **Chlorantranilipore benzoate 5%:** This can be used at a dosage of 1 gm per litre of water.\n    *   **Coragen 18.5 SC (chlorantraniliprole):** This insecticide can be applied at 0.4 g/litre of water.\n    *   **Delegate 11.7 SC (spinetoram):** Another effective chemical control option.\n    *   **Emamectin benzoate:** Can be used at 0.4 g/litre of water.\n    *   **Important Note:** When using chemical sprays, ensure the nozzle is directed towards the affected plants for effective control, especially in the whorls. The amount of water used per acre may need to be increased with crop growth.\n\n**Other Important Practices:**\n\n*   **Deep Ploughing:** Deep ploughing of fields before the rains is highly recommended for Kharif maize.\n*   **Drain Excess Water:** If there are heavy rains, drain excess water from the fields to prevent water stagnation, as maize is sensitive to waterlogging.\n*   **Earthing Up:** Earthing up should be done twice, first at 35-40 days after sowing (DAS) and again at 60-65 DAS.\n\nWhile the context does not specifically mention Punjab, these practices are general guidelines for managing Fall Armyworm in maize and would be applicable in your region.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "2a4a5bdd-1151-4d27-8183-65f561e09006",
+          "score": 0.7683869
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "ae96746c-580a-4186-8ea0-dba2b302c340",
+          "score": 0.761352539
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "aa910aad-5e6a-48ef-9fe9-11ef3fe6b339",
+          "score": 0.708731711
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "451d307c-9c4d-4370-a0f4-8ba10fbb76f8",
+          "score": 0.660821915
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "a61ec35d-296c-49c1-a39b-65fab5020d4c",
+          "score": 0.644315779
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 3591
+    },
+    {
+      "query_number": 7,
+      "query": "What are the recommended paddy varieties for Jammu below 800m elevation?",
+      "type": "Good",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 1743.23,
+      "answer": "For the Jammu region below 800m elevation, the recommended paddy varieties are Ratna, PC-19, Jaya, RR-8585 (Ajay), Saanwal Basmati, and hybrids KRH-1039.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "7e7cd561-8ac5-4c75-9d7a-400ecbe34264",
+          "score": 0.660420418
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "d01ee27b-ee79-4e26-878c-dc06ccf9ee64",
+          "score": 0.603932381
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "78f46155-5efb-4300-b63b-ffc385082996",
+          "score": 0.602048
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "3fb27df4-d55a-481a-bf17-53d5fbd4346d",
+          "score": 0.594927788
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "69539a72-714e-4353-89ca-2cc04c61b6d9",
+          "score": 0.592845917
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 1739
+    },
+    {
+      "query_number": 8,
+      "query": "What is the NPK recommendation for brinjal according to the Arunachal Pradesh advisory?",
+      "type": "Good",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 2067.47,
+      "answer": "I am KrishiMitra, your AI assistant for Indian agriculture.\n\nRegarding the NPK recommendation for brinjal according to the Arunachal Pradesh advisory, the provided agricultural documents do not contain specific information for Arunachal Pradesh.\n\nHowever, based on the general recommendations for brinjal cultivation in the Kharif season from the other sources, here's what is mentioned about fertilizer application:\n\n*   **Source 2** mentions that before transplanting brinjal, you should apply **110 kg of Urea, 376 kg of SSP & 96 kg of MOP per hectare**.\n*   **Source 4** states that at the time of sowing, **40kg Nitrogen** should be applied per hectare.\n\nThese recommendations are general and may need to be adjusted based on local soil conditions and specific variety requirements. It is always best to consult with your local agricultural extension officer for advice tailored to your region.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "4147e3e4-5169-4ed7-8616-e805198c8a06",
+          "score": 0.639733315
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "73e98f2c-acdb-4396-97f4-0d75c4f03ae6",
+          "score": 0.620931625
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "22e92845-ed52-4579-8fe5-0d6b977e7bf8",
+          "score": 0.620448112
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "ddcb6ca2-e2e4-454d-93e9-914065846d04",
+          "score": 0.549222
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "9b68fd15-d34f-4d46-bf33-f67d2b7cd090",
+          "score": 0.537856102
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 2063
+    },
+    {
+      "query_number": 9,
+      "query": "How is bacterial blight managed in cotton in Rajasthan?",
+      "type": "Good",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 1758.49,
+      "answer": "I cannot find specific information on managing bacterial blight in cotton in Rajasthan within the provided agricultural documents. The context discusses various aspects of cotton cultivation in the Kharif season, including sowing times, varieties, seed treatment, and management of pests like whitefly and pink bollworm, as well as general fertilizer recommendations. However, it does not detail practices for bacterial blight.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "b8a2f20b-9109-4992-9ec7-952236d5ef1f",
+          "score": 0.651780128
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "49745f15-d949-4c8a-a2ba-d719b29b0d80",
+          "score": 0.627422273
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "a70e347b-e78e-43af-b205-207c06e2e62e",
+          "score": 0.615747452
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "b21efddb-de69-4387-8f77-169153f2d67d",
+          "score": 0.602061272
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "0249f00b-ca9b-4e21-821d-dfa8cab00f2c",
+          "score": 0.593277
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 1755
+    },
+    {
+      "query_number": 10,
+      "query": "What sugarcane varieties are mentioned in the Andhra Pradesh advisory?",
+      "type": "Good",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 1350.63,
+      "answer": "I cannot find specific sugarcane varieties mentioned for Andhra Pradesh in the provided agricultural documents. The documents list several sugarcane varieties, but they do not specify which ones are recommended for Andhra Pradesh.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "514878ba-4c05-45d5-a1fe-13744283dfc7",
+          "score": 0.588181555
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "0679fab3-a596-4e26-b4b1-320249655b4f",
+          "score": 0.570342124
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "6b627c51-25a1-4a55-9c7c-2882a8ab5fc6",
+          "score": 0.56656462
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "c1762685-1a03-4963-be9d-2392055911c8",
+          "score": 0.563242
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "8c371076-58cc-48bb-bcfa-e903d24ba9ce",
+          "score": 0.556879103
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 1346
+    },
+    {
+      "query_number": 11,
+      "query": "What is the seed treatment recommended for paddy in Bihar?",
+      "type": "Good",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 1857.94,
+      "answer": "For paddy seed treatment in Bihar, farmers are advised to treat their seeds with **carbendazim at 2.5 g per kg of seed**.\n\nAdditionally, it is recommended to use a combination of **mancozeb + carbendazim at 3g per kg of seed**. For this, you should make a paste of the fungicide solution by dissolving it in 10-12 ml of water per kg of seed and then rub it thoroughly on the seed.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "78f46155-5efb-4300-b63b-ffc385082996",
+          "score": 0.709788382
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "6ddd3fcb-f88b-498d-ab84-8cf187dbe217",
+          "score": 0.698582649
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "e5533cb9-0f89-4390-8f0a-ed7d78b5d8d4",
+          "score": 0.674045563
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "337c84a0-5395-4291-8e92-382669ffccde",
+          "score": 0.670513153
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "314f0457-f6a5-4b34-af80-77140e9caaca",
+          "score": 0.667347
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 1853
+    },
+    {
+      "query_number": 12,
+      "query": "What are the recommended Ginger varieties for Odisha?",
+      "type": "Good",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 3091.38,
+      "answer": "Based on the provided agricultural documents, there is no specific mention of recommended ginger varieties for Odisha.\n\nHowever, the documents do list some ginger varieties that are suitable for the Kharif season, which might be relevant for your region:\n\n*   **Nadia** (Source 2)\n*   **Lakadong** (Source 2)\n*   **Sahsharang, RCM 10, CAU** (Source 2)\n\nThese varieties are generally recommended for sowing during the Kharif season. For successful cultivation, the documents suggest the following practices for ginger:\n\n*   **Seed Treatment:** Treat ginger rhizomes with *Trichoderma viridi* @ 20gm with 1 litre of water or *Trichoderma harzianum* @ 5g/kg seeds or @ 5g/l of water. It is also recommended to treat seeds with *Trichoderma viridi* @ 4g/lit of water for 5 minutes before planting. Before sowing, treat the rhizome with *Trichoderma Viride*@4g/lit of water for 5 minutes. (Source 1, Source 2, Source 3)\n*   **Planting Material:** Collect healthy and certified seeds to avoid seed-borne diseases. One-year-old rooted cuttings are the best planting material. (Source 1, Source 5)\n*   **Planting Time:** Sowing of ginger varieties Nadia, Lakadong should be completed in the month of June. (Source 2)\n*   **Spacing:** A spacing of 20 x 15 cm is recommended for seedlings, and 20q/ha and 30x30cm spacing for planting. (Source 2)\n*   **Fertilizer Application:** Before planting, apply neem oil. For fertilizer application, follow the card for proper application. (Source 1) A combination of 100 kg N, 50 kg P2O5 + 50 kg FYM is mentioned for raising seedlings for one hectare. (Source 2)\n*   **Soil Preparation:** Planting in ridges and furrows is advised. (Source 2)\n*   **Other Practices:** Proper weeding and earthing up are important. Mulching of the beds with dry plant residue can help prevent soil erosion and conserve soil moisture. (Source 2)",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "39bece32-4beb-4e89-8738-6fe62a81f903",
+          "score": 0.58225441
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "042bff53-5f10-4ba8-8c35-2f99a6691833",
+          "score": 0.517521918
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "7422dbbd-0293-459c-832f-ac4022a5e998",
+          "score": 0.493719101
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "71db94cb-0fa1-4a56-94aa-5a22d608f108",
+          "score": 0.490091324
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "34da880e-2248-4aa2-95c0-0ff9a5698719",
+          "score": 0.480381966
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 3085
+    },
+    {
+      "query_number": 13,
+      "query": "What is the weather forecast for Bengaluru next week?",
+      "type": "Bad",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 1646.51,
+      "answer": "I am sorry, but the provided context does not contain any weather forecast information for Bengaluru for the next week. The documents discuss general agricultural advisories for the Kharif season, including livestock management, bird protection, fish farming, and crop residue management, but do not offer specific regional weather predictions.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "06ba8ba2-1cdc-4f48-9a35-d166266ace20",
+          "score": 0.315956146
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "20e244a0-c4f7-464f-a128-52818a44336a",
+          "score": 0.302222252
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "72db00fa-b191-4040-8b61-03e3abc476dc",
+          "score": 0.301358223
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "33b46ba6-00b0-456f-b5f8-07e9651cb64f",
+          "score": 0.293911964
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "3d0083f8-3ac4-469e-bc06-e6b360badefa",
+          "score": 0.290803
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 1642
+    },
+    {
+      "query_number": 14,
+      "query": "How do I grow coffee beans in Himachal Pradesh?",
+      "type": "Bad",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 1345.57,
+      "answer": "I am sorry, but the provided agricultural documents do not contain information on how to grow coffee beans in Himachal Pradesh. The documents focus on Kharif season crops like pigeon pea, mung bean, urd bean, and groundnut, and discuss specific varieties, sowing times, fertilizer recommendations, and pest management for these crops.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "99c945b8-1698-4c38-b5e6-efed3ba4c5df",
+          "score": 0.551914275
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "43021d97-198b-430d-8008-ee3b53de0c05",
+          "score": 0.541723311
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "378ffd2f-44e7-4d9a-8d45-3b946746d7b9",
+          "score": 0.520330489
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "d42d1eae-adb5-4096-b322-65b0331ebb3c",
+          "score": 0.518676817
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "acd34c7f-6b83-4f57-b987-3fc9f47663e3",
+          "score": 0.501891196
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 1342
+    },
+    {
+      "query_number": 15,
+      "query": "What was the maize yield in Punjab in 2020?",
+      "type": "Bad",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 1649.9,
+      "answer": "I'm sorry, but the provided context does not contain information about the maize yield in Punjab in 2020. The documents discuss general practices for maize cultivation, including land preparation, sowing times, seed varieties, fertilizer recommendations, spacing, and pest control, but they do not specify regional yield data for particular years.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "3f2332c6-1e58-44f2-a0bd-206504317e54",
+          "score": 0.556842864
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "ed9e693c-16ca-4686-8a69-8860a2011d35",
+          "score": 0.55133152
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "03b567dd-7d99-4bb3-bbf6-2317ee85e531",
+          "score": 0.517395
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "26d1492d-3d86-4e6d-a06d-97b7e2eff43b",
+          "score": 0.512763
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "b908044e-9972-43e9-bad4-de86e635450c",
+          "score": 0.512103081
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 1646
+    },
+    {
+      "query_number": 16,
+      "query": "Tell me about livestock management in Canada.",
+      "type": "Bad",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 1190.94,
+      "answer": "I cannot answer your question about livestock management in Canada. The provided context information is specific to Indian agriculture and does not contain any details related to Canada.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "5398a59f-ec16-4f88-9550-84f8dde294fa",
+          "score": 0.518993437
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "625babe5-adf8-45ea-9c60-d16e39d45a27",
+          "score": 0.508874
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "f478ec90-7d8e-43d8-9d4d-1c203542f650",
+          "score": 0.50319773
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "31551859-93d8-45c1-a340-8350d9011fa8",
+          "score": 0.502642691
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "ad06d92e-b751-4fef-82d9-88fd28e63ab1",
+          "score": 0.499248564
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 1188
+    },
+    {
+      "query_number": 17,
+      "query": "How to apply for agricultural subsidies in Rajasthan?",
+      "type": "Bad",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 1300.11,
+      "answer": "I'm sorry, but the provided agricultural documents do not contain information on how to apply for agricultural subsidies in Rajasthan. The context focuses on agricultural practices, crop varieties, and field preparation for the Kharif season.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "6fb371d1-fce0-42cc-b1ae-514005beeb80",
+          "score": 0.514938354
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "2e61cc4f-0098-4667-933c-9b801e223535",
+          "score": 0.512779236
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "3fb27df4-d55a-481a-bf17-53d5fbd4346d",
+          "score": 0.497990608
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "1189c7ae-dc6c-43d8-8ebd-c1e2e2ad88ff",
+          "score": 0.497964859
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "c698e46e-b257-401f-aceb-efbd0e6adc90",
+          "score": 0.496916771
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 1297
+    },
+    {
+      "query_number": 18,
+      "query": "Compare the maize sowing recommendations (timing and spacing) for Punjab and Himachal Pradesh.",
+      "type": "Hard",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 2879.89,
+      "answer": "Here's a comparison of maize sowing recommendations for Punjab and Himachal Pradesh, based on the provided agricultural documents:\n\n**Timing of Sowing:**\n\n*   **Punjab:**\n    *   For timely sowing, maize can be sown from **April 20th to May 15th**.\n    *   For late sowing, the period is from **June 1st to June 15th**.\n*   **Himachal Pradesh:**\n    *   The documents suggest sowing maize from **April 20th to May 15th** for timely sowing.\n    *   For late sowing, the recommendation is from **June 1st to June 15th**.\n    *   Additionally, for the Northern hills and Bastar plateau regions (which would include parts of Himachal Pradesh), maize can be sown from the **last week of May to the end of June**, depending on the availability of the growing period.\n\n**Spacing:**\n\n*   **Punjab:**\n    *   For timely sowing and varieties like \"Makka-2\", a spacing of **60 cm** is recommended.\n    *   For late sowing and varieties like \"Bajaura sweet corn\", a spacing of **60 cm** is also recommended.\n    *   The general spacing for maize should maintain a plant population of **75,000-83,000 plants/ha**.\n    *   Specific spacing recommendations for certain hybrids like PMH 1, PMH 11, JC 12 are **75cm x 18cm or 60cm x 20cm**.\n*   **Himachal Pradesh:**\n    *   The general spacing recommendation for maize is **60 cm**. This is to avoid lodging and ensure higher yield and better establishment, especially in dry and hot weather conditions.\n    *   For maintaining an optimum plant population of 75,000-83,000 plants/ha, a spacing of **60 cm** is advised.\n    *   When using varieties like \"Kesri\" and \"Pear Popcorn\", the spacing recommendation is **60 cm**.\n\n**Key Takeaways:**\n\nBoth Punjab and Himachal Pradesh share similar recommendations for the timing of maize sowing during the Kharif season. The spacing recommendations also largely align, with a general emphasis on **60 cm** to ensure good plant establishment and yield. The documents highlight that maintaining an optimal plant population is crucial for higher yields.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "3f2332c6-1e58-44f2-a0bd-206504317e54",
+          "score": 0.768831313
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "7be32769-b40a-4308-aee9-17614f16f4ea",
+          "score": 0.728889465
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "b465243b-a241-4b89-8869-944ac6983ac1",
+          "score": 0.697591782
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "ed9e693c-16ca-4686-8a69-8860a2011d35",
+          "score": 0.695471764
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "2e47364e-edc4-4f0e-b3b2-20b060cf45d5",
+          "score": 0.683976173
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 2876
+    },
+    {
+      "query_number": 19,
+      "query": "What are the common pest control chemicals mentioned for cotton across Punjab and Rajasthan?",
+      "type": "Hard",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 3084.11,
+      "answer": "For cotton cultivation during the Kharif season, several pest control chemicals are mentioned in the provided agricultural documents. While the documents do not specifically mention Punjab and Rajasthan together, they offer general pest control strategies applicable to cotton.\n\n**Pest Control Chemicals for Cotton:**\n\n*   **Seed Treatment:**\n    *   **Emamectin Benzoate:** Treat seeds with 5 gm of Emamectin Benzoate per unit of seed.\n    *   **Imidacloprid:** Seed treatment with Imidacloprid is recommended to protect crops from sucking pests for up to 4 weeks.\n    *   **Carbendazim:** Seed treatment with carbendazim is also mentioned.\n\n*   **Foliar Sprays:**\n    *   **Thiodicarb:** Can be applied at 300g/acre.\n    *   **Spinosad:** Mentioned for controlling fruit borer and leaf-eating pests.\n    *   **Neem-based pesticide:** Recommended for pest control in general.\n    *   **Quinalphos:** Can be used at 2ml per liter of water.\n    *   **Monocrotophos:** Can be used at 1.6ml per liter of water.\n    *   **Endosulfan:** Can be used at 2.0 ml per liter of water.\n    *   **Carbaryl:** Can be used at 50% WP @ 3 g/litre or @ 3.0g/litre.\n    *   **Malathion 50 EC:** Can be mixed with jaggery (10g/l) for monitoring and killing adult pests.\n\n**Key Pests Mentioned for Cotton:**\n\n*   Whitefly\n*   Pink bollworm\n*   American cotton pests\n*   Sucking pests\n\n**Important Considerations for Cotton:**\n\n*   **Sowing Time:** Cotton is grown in the Kharif season, with sowing generally from April to May. Delaying sowing can result in lower yields.\n*   **Water Stress:** Cotton is sensitive to water stress, especially during flowering. Ensuring adequate irrigation for higher yields is crucial.\n*   **Pest Build-up:** Avoid growing other preferred host crops and dhaincha in and around cotton fields, as they can contribute to pest build-up and spread.\n*   **Regular Surveillance:** Regular monitoring of the field is essential to detect pests and diseases early.\n*   **Fertilizer Use:** Use fertilizers judiciously, as excessive use can lead to toxicity and increased susceptibility to insect pests.\n\nWhile specific regional recommendations for Punjab and Rajasthan are not detailed, these general pest control measures and chemicals are relevant for cotton cultivation during the Kharif season.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "93630242-3356-4c80-af01-cf3c978a7ee0",
+          "score": 0.690440238
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "e35dc405-5adc-44e4-a2bc-446fa16f1be9",
+          "score": 0.680017471
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "b8a2f20b-9109-4992-9ec7-952236d5ef1f",
+          "score": 0.651374817
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "49745f15-d949-4c8a-a2ba-d719b29b0d80",
+          "score": 0.646874368
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "a70e347b-e78e-43af-b205-207c06e2e62e",
+          "score": 0.645259857
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 3081
+    },
+    {
+      "query_number": 20,
+      "query": "What are the fertilizer recommendations (NPK) for both hybrid maize and transplanted rice in Arunachal Pradesh?",
+      "type": "Hard",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 2579.37,
+      "answer": "I am KrishiMitra, your AI assistant for Indian agriculture.\n\nRegarding fertilizer recommendations for **transplanted rice** in Arunachal Pradesh, the provided context does not mention this specific state. However, it does offer general fertilizer recommendations for transplanted rice that can be applied.\n\nFor **transplanted rice**, the context suggests the following:\n\n*   **Moderate fertilizer doses:**\n    *   125 kg SSP (Single Super Phosphate)\n    *   66 kg MOP (Muriate of Potash) per hectare.\n    *   Additionally, 44 kg Urea, 62 kg SSP, and 16 kg MOP per hectare are mentioned for certain varieties.\n\n*   **Application Schedule:**\n    *   For **long duration (140-155 days)** rice varieties:\n        *   Apply half of the Urea and the whole of SSP at the time of final puddling.\n        *   Apply the rest of the Urea at the tillering stage.\n        *   Apply the remaining quantity of MOP at the panicle initiation stage.\n    *   For **medium duration (120-135 days)** rice varieties:\n        *   Apply half of Urea and the whole of SSP at the time of final puddling.\n        *   Apply the rest of the Urea at the tillering stage.\n        *   Apply MOP at the panicle initiation stage.\n\n*   **If soil test reports are available:** Follow the soil test-based recommendations, and fertilizer doses may be increased.\n\nThe context also mentions applying **Zinc Sulphate Heptahydrate (21%)** at 25 kg per hectare or **Zinc Sulphate Monohydrate (33%)** at 16 kg per hectare in case of Zinc deficiency symptoms.\n\nRegarding **hybrid maize** in Arunachal Pradesh, the provided context does not contain any information about fertilizer recommendations for this crop.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "3539577f-b9bd-4a1a-8104-a01e9b9718ed",
+          "score": 0.67698288
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "f1dd0803-4221-470e-8e05-49a2e57a5e06",
+          "score": 0.673418045
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "7254e40b-2035-4fd9-9941-1a464d402f20",
+          "score": 0.67284584
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "5dae1578-cdc1-46d0-b1c6-3293304e1cd3",
+          "score": 0.665927887
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "fa4e95e1-9a61-49e7-92bb-848e16a75a01",
+          "score": 0.661157608
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 2573
+    },
+    {
+      "query_number": 21,
+      "query": "List the sowing times and seed rates for cotton, maize, and paddy mentioned in the Punjab advisories.",
+      "type": "Hard",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 2367.1,
+      "answer": "Here are the sowing times and seed rates for cotton, maize, and paddy based on the provided agricultural advisories:\n\n**Cotton:**\n\n*   **Sowing Time:** Cotton should be sown after the onset of monsoons or after the 7th of June.\n*   **Seed Rate:** The context does not explicitly mention a seed rate for cotton. However, it advises that Soybean seeds should be tested before sowing and good germination seeds should be used. This general advice on seed quality would also apply to cotton.\n\n**Maize:**\n\n*   **Sowing Time:**\n    *   For timely sowing, maize can be completed from the 15th of May to the 15th of June.\n    *   For late sowing, maize can be completed from the 15th of June.\n*   **Seed Rate:** The context does not explicitly state the seed rate for maize in kg per hectare. However, it mentions that a plant population of 75,000-83,000 is recommended for maize, and a population less than 50,000 affects yield. It also mentions that 25 kg seed/hectare is required for nursery sowing.\n\n**Paddy:**\n\n*   **Sowing Time:**\n    *   Nursery sowing for paddy can be done from the 1st of May to the first week of June.\n    *   Sowing can be done in nursery seed beds.\n*   **Seed Rate:** Twenty-five (25) kg seeds are required for 8 to 10 beds for paddy nursery sowing.",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "69c2a3c2-4c7d-419b-9ccf-7e625cf8a11e",
+          "score": 0.680035591
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "3f2332c6-1e58-44f2-a0bd-206504317e54",
+          "score": 0.662096083
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "c9a1258a-b707-4d7c-bf37-d6dd413085c9",
+          "score": 0.657398283
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "2e61cc4f-0098-4667-933c-9b801e223535",
+          "score": 0.652536392
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "b094f366-1c75-4cba-8e7a-434a21de44a7",
+          "score": 0.645464897
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 2363
+    },
+    {
+      "query_number": 22,
+      "query": "What biocontrol agents or organic methods are suggested for pest management across different crops in the provided advisories?",
+      "type": "Hard",
+      "status": "success",
+      "http_status": 200,
+      "response_time_ms": 3801.96,
+      "answer": "Namaste! KrishiMitra here to help you with biocontrol agents and organic methods for pest management, based on the agricultural advisories.\n\nHere's what the advisories suggest for organic and biocontrol approaches:\n\n**General Biocontrol and Organic Methods:**\n\n*   **Neem-based pesticides:** For brinjal, it is suggested to spray neem-based pesticides at all stages. (Source 2)\n*   **Fungal biocontrol agents:** For fruit borer management in tomato and brinjal, you can use **Beauveria bassiana** or **Metarhizium anisopliae** mixed with water. (Source 3)\n*   **Nematode bio-control:** For managing nematodes, you can use the egg parasitic fungus **Paecilomyces lilacinus** at a rate of 25 grams per 100 kg of farm yard manure. (Source 4)\n*   **Neem cake:** Along with the above nematode control, you can also mix **neem cake** at 250 grams per 100 kg of farm yard manure. (Source 4)\n*   **Soap solution:** A mixture of **soap solution** can be used. (Source 4)\n\n**Specific Crop Recommendations:**\n\n*   **Tomato and Brinjal:**\n    *   For management of early blight and fruit rot disease in tomato, you can use **COC (Copper Oxychloride)** at 3g per liter of water. (Source 3)\n    *   For brinjal fruit and shoot borer, applying **Emamectin Benzoate 5% SG** is suggested. (Source 3)\n    *   You can also apply **Plantomycin** at 3 g/litre of water for tomato and brinjal. (Source 2)\n    *   For general pest and disease control in brinjal, spraying **Neem based pesticide** at all stages is recommended. (Source 2)\n\n*   **Cucurbits:**\n    *   For fruit fly management in cucurbits, you can use **Beauveria bassiana** or **Metarhizium anisopliae** mixed with water. (Source 3)\n\n*   **Chilli:**\n    *   To manage leaf spot in chili, you can use **carbendazim** at 10 g in 10 liters of water. (Source 3)\n\n**Other Relevant Practices:**\n\n*   **Collecting and destroying infested fruits:** For fruit fly, it is advised to collect and destroy fallen and infested fruits. (Source 4)\n*   **Summer ploughing:** Summer ploughing is suggested to expose pupae. (Source 4)\n*   **Seed treatment:** Treating seeds with **thiram or captan** or a **culture** (200-400 g/kg) is recommended to prevent seed-borne diseases and damping off. (Source 5, Source 1)\n*   **Removing damaged parts:** Remove damaged fruit and vines to control the spread of diseases. (Source 2)\n\nPlease remember to follow the recommended dosages and application methods for best results. If you have any more questions, feel free to ask!",
+      "sources": [
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "e35dc405-5adc-44e4-a2bc-446fa16f1be9",
+          "score": 0.726445198
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "93630242-3356-4c80-af01-cf3c978a7ee0",
+          "score": 0.717320502
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "83a53404-d7ab-41f9-94fe-fe84af634b50",
+          "score": 0.672627449
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "bf7745bb-eafa-4dd4-a19e-24f122bbe264",
+          "score": 0.659966528
+        },
+        {
+          "source": "unknown",
+          "page": null,
+          "chunk_id": "84e5be92-379e-4911-bf7c-c1326ee5dca9",
+          "score": 0.65307188
+        }
+      ],
+      "num_chunks_retrieved": 5,
+      "backend_latency_ms": 3799
+    }
+  ]
+}
