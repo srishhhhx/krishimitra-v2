@@ -75,39 +75,50 @@ class DiseaseDetectionAgent(ToolAgent):
         Execute disease detection workflow (Orchestrator V2 Pattern)
 
         WORKFLOW (Multimodal Image Processing):
-        1. Validate at least one image is present
+        1. Validate at least one image is present. If not, request clarification.
         2. Normalize base64 (strip data URI prefix)
         3. Optional LLM crop extraction (if query + LLM available)
         4. Invoke PyTorch vision tool (ResNet-9 CNN)
         5. Return results in collected_findings
 
         Args:
-            state: Current agent state with images (required) and optional user_query
+            state: Current agent state with optional images and user_query
 
         Returns:
             Updated state with collected_findings["disease_detection_agent"] containing:
-                - status: "success" | "error"
+                - status: "success" | "error" | "needs_clarification"
                 - data: Disease detection result (if success)
                 - error: Error message (if error)
-
-        Note: This agent does NOT support clarification (needs_clarification).
-              Images cannot be clarified - user must provide valid image upfront.
+                - clarification_question: Question for the user (if clarification needed)
         """
         # Initialize collected_findings if needed
         if "collected_findings" not in state:
             state["collected_findings"] = {}
+        if "clarification_state" not in state:
+            state["clarification_state"] = {}
 
         try:
-            # Phase 1: Validate images are present
+            # Phase 1: Validate images are present, else ask for clarification
             images = state.get("images")
             if not images or len(images) == 0:
-                error_msg = "No images provided. Disease detection requires at least one image."
-                logger.warning(f"{self.name}: {error_msg}")
-                state["collected_findings"]["disease_detection_agent"] = {
-                    "status": "error",
-                    "error": error_msg,
-                    "help": "Please upload an image of the affected crop leaf or plant part."
+                clarification_question = "I need an image to detect the disease. Please upload a photo of the affected plant."
+                logger.warning(f"{self.name}: {clarification_question}")
+
+                # Set findings for the supervisor to know the status
+                state["collected_findings"][self.name] = {
+                    "status": "needs_clarification",
+                    "missing_fields": ["images"],
+                    "clarification_question": clarification_question
                 }
+                
+                # Set the clarification_state for the supervisor's clarification logic
+                state["clarification_state"][self.name] = {
+                    "needs_clarification": True,
+                    "question_for_user": clarification_question,
+                    "agent_waiting": self.name,
+                    "requested_fields": ["images"]
+                }
+                
                 self._add_to_executed_agents(state)
                 return state
 

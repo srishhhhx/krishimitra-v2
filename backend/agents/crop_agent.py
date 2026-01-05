@@ -141,6 +141,15 @@ class CropAgent(ToolAgent):
 
             logger.info(f"{self.name}: Processing query: {query[:100]}...")
 
+            # Phase 0.1: Detect multi-crop request (e.g., "5 best crops for Punjab")
+            requested_count = self._detect_multi_crop_request(query)
+            if requested_count > 1:
+                logger.info(f"{self.name}: Multi-crop request detected, will return top {requested_count} crops")
+                # Store in user_context for response formatting  
+                if "user_context" not in state:
+                    state["user_context"] = {}
+                state["user_context"]["requested_crop_count"] = requested_count
+
             # Phase 0: Check if user explicitly stated a crop preference (BUG FIX #8)
             user_stated_crop = self._detect_user_crop_preference(query)
             if user_stated_crop:
@@ -167,9 +176,95 @@ class CropAgent(ToolAgent):
                 state["executed_agents"].append(self.name)
                 return state
 
+            # Phase 0.5: Read supervisor-extracted values from user_context (NEW - LLM consolidation)
+            supervisor_extracted = {}
+            user_context = state.get("user_context", {})
+            
+            # Map supervisor extraction keys to crop_agent parameter names
+            context_mapping = {
+                "n_value": "N",
+                "p_value": "P", 
+                "k_value": "K",
+                "temperature": "temperature",
+                "humidity": "humidity",
+                "ph": "ph",
+                "rainfall": "rainfall"
+            }
+            
+            for context_key, param_key in context_mapping.items():
+                if user_context.get(context_key) is not None:
+                    supervisor_extracted[param_key] = float(user_context[context_key])
+            
+            if supervisor_extracted:
+                logger.info(f"{self.name}: Supervisor-extracted params: {supervisor_extracted}")
+
+            # Phase 0.6: Infer NPK from soil_type if supervisor extracted it (CRITICAL FIX)
+            # This ensures "sandy soil in Pune" uses sandy soil NPK values, not defaults
+            soil_type = user_context.get("soil_type")
+            if soil_type and "N" not in supervisor_extracted:
+                soil_npk_mapping = {
+                    "sandy": {"N": 20, "P": 20, "K": 20, "ph": 6.5},
+                    "loamy": {"N": 60, "P": 50, "K": 50, "ph": 6.5},
+                    "black": {"N": 60, "P": 40, "K": 80, "ph": 7.5},
+                    "red": {"N": 40, "P": 30, "K": 30, "ph": 5.5},
+                    "clay": {"N": 80, "P": 40, "K": 40, "ph": 6.0},
+                    "clayey": {"N": 80, "P": 40, "K": 40, "ph": 6.0},
+                    "alluvial": {"N": 60, "P": 45, "K": 45, "ph": 7.0},
+                }
+                soil_lower = soil_type.lower().strip()
+                if soil_lower in soil_npk_mapping:
+                    npk_values = soil_npk_mapping[soil_lower]
+                    for key, value in npk_values.items():
+                        if key not in supervisor_extracted:
+                            supervisor_extracted[key] = float(value)
+                    logger.info(f"{self.name}: Inferred NPK from soil_type '{soil_type}': {npk_values}")
+
+            # Phase 0.7: Infer NPK from location using regional soil database (NEW - location-based inference)
+            # This ensures "What crop for Pune?" uses Pune's actual soil NPK values
+            location = user_context.get("location")
+            if location and "N" not in supervisor_extracted:
+                from core.regional_data import get_soil_for_location
+                regional_soil = get_soil_for_location(location)
+                if regional_soil:
+                    for key in ["N", "P", "K", "ph"]:
+                        if key in regional_soil and key not in supervisor_extracted:
+                            supervisor_extracted[key] = float(regional_soil[key])
+                    # Also capture soil_type for logging
+                    if not soil_type and regional_soil.get("soil_type"):
+                        user_context["soil_type"] = regional_soil["soil_type"]
+                    logger.info(f"{self.name}: Inferred NPK from location '{location}': {regional_soil}")
+
+            # Phase 0.8: Read real-time weather from weather_agent if available (MULTI-AGENT CHAIN)
+            # This enables Weather → Crop chain where crop agent uses actual weather data
+            weather_findings = state.get("collected_findings", {}).get("weather_agent", {})
+            if weather_findings.get("status") == "success":
+                weather_data = weather_findings.get("data", {})
+                # Map weather fields to crop agent parameters
+                weather_mapping = {
+                    "temperature": "temperature",
+                    "humidity": "humidity",
+                    # Note: weather API doesn't provide rainfall, but we could estimate from forecast
+                }
+                for weather_key, param_key in weather_mapping.items():
+                    if weather_data.get(weather_key) is not None:
+                        # Only use weather data if not already explicitly provided by user
+                        if supervisor_extracted.get(param_key) is None:
+                            supervisor_extracted[param_key] = float(weather_data[weather_key])
+                            logger.info(f"{self.name}: Using real-time weather {param_key}={weather_data[weather_key]}")
+                
+                # Store weather location in context for later use
+                if weather_data.get("location_name"):
+                    user_context["weather_location"] = weather_data["location_name"]
+
             # Phase 1: Extract parameters from natural language using LLM
             extracted_params = await self._extract_parameters_with_llm(query, state)
-            logger.info(f"{self.name}: Extracted parameters: {extracted_params}")
+            logger.info(f"{self.name}: LLM-extracted parameters: {extracted_params}")
+
+            # Phase 1.25: Merge supervisor-extracted values (supervisor takes precedence)
+            for param_key, value in supervisor_extracted.items():
+                if value is not None:
+                    extracted_params[param_key] = value
+                    logger.info(f"{self.name}: Using supervisor-extracted {param_key}={value}")
 
             # Phase 1.5: Apply regional climate defaults (CRITICAL FIX - BUG: jute always recommended)
             # Check for location in user_context or query and use regional climate
@@ -233,10 +328,12 @@ class CropAgent(ToolAgent):
                     "alternatives": result.get("alternatives", []),
                     "input_parameters": result.get("input_parameters", {}),
                     "defaults_applied": defaults_used,
+                    "requested_crop_count": state.get("user_context", {}).get("requested_crop_count", 1),
                     "metadata": {
                         **result.get("metadata", {}),
                         "defaults_used": bool(defaults_used),
-                        "extracted_params": extracted_params
+                        "extracted_params": extracted_params,
+                        "multi_crop_request": state.get("user_context", {}).get("requested_crop_count", 1) > 1
                     }
                 }
             }
@@ -282,12 +379,22 @@ class CropAgent(ToolAgent):
         """
         # PHASE 1: Try regex extraction for explicit numeric parameters (fast path)
         regex_extracted = self._extract_parameters_with_regex(query)
+        
+        # PHASE 1.5: Try keyword-based heuristic extraction (robust fallback)
+        keyword_extracted = self._extract_parameters_from_keywords(query)
+        
+        # Merge keyword findings into regex findings (Regex takes precedence for explicit numbers)
+        # e.g. "clay soil with N=20" -> Regex N=20 overrides Keyword N=80
+        combined_heuristics = {**keyword_extracted, **{k: v for k, v in regex_extracted.items() if v is not None}}
 
-        # If regex found all parameters, skip LLM (saves ~500ms)
-        has_all_params = all(v is not None for v in regex_extracted.values())
-        if has_all_params:
-            logger.info(f"{self.name}: Regex extraction found all parameters (fast path)")
-            return regex_extracted
+        # If heuristics found ALL parameters, skip LLM (saves ~500ms and quota)
+        # We check against the count of needed parameters (7)
+        if len(combined_heuristics) >= 7:
+            logger.info(f"{self.name}: Heuristic extraction found sufficient parameters (fast path)")
+            # Fill missing None values from empty template
+            result = self._empty_params()
+            result.update(combined_heuristics)
+            return result
 
         # PHASE 2: Use LLM for natural language extraction
         # BUG FIX: Add location hint if location was detected by supervisor
@@ -300,9 +407,51 @@ class CropAgent(ToolAgent):
 The location '{detected_location}' was detected in the user's query. You MUST infer climate parameters (temperature, humidity, rainfall) for this location if they are not explicitly provided in the query.
 """
 
+        # MULTI-TURN CONTEXT: Build context from previous turns and extracted entities
+        conversation_context = ""
+        if state:
+            user_context = state.get("user_context", {})
+            previous_entities = []
+            
+            # Add location from context
+            if user_context.get("location"):
+                previous_entities.append(f"Location: {user_context['location']}")
+            # Add soil type from context
+            if user_context.get("soil_type"):
+                previous_entities.append(f"Soil type: {user_context['soil_type']}")
+            # Add crop from context (if user mentioned it earlier)
+            if user_context.get("crop_type"):
+                previous_entities.append(f"Crop: {user_context['crop_type']}")
+            # Add any NPK from previous extraction
+            if user_context.get("n_value"):
+                previous_entities.append(f"N: {user_context['n_value']}")
+            if user_context.get("p_value"):
+                previous_entities.append(f"P: {user_context['p_value']}")
+            if user_context.get("k_value"):
+                previous_entities.append(f"K: {user_context['k_value']}")
+            
+            # Also check conversation_history for recent context
+            conv_history = state.get("conversation_history", [])
+            if conv_history and len(conv_history) > 0:
+                # Get last user message for context
+                recent_context = []
+                for turn in conv_history[-2:]:  # Last 2 turns
+                    if turn.get("role") == "user" and turn.get("content"):
+                        recent_context.append(f"Previous: \"{turn['content'][:100]}\"")
+                if recent_context:
+                    previous_entities.extend(recent_context)
+            
+            if previous_entities:
+                conversation_context = f"""
+
+**CONVERSATION CONTEXT (from previous turns):**
+{chr(10).join('- ' + e for e in previous_entities)}
+Use this context when the current query is incomplete or refers to previously mentioned information.
+"""
+
         prompt = f"""You are an expert agricultural assistant. Extract soil and climate parameters from the user's query.
 
-User Query: "{query}"{location_hint}
+User Query: "{query}"{location_hint}{conversation_context}
 
 Extract the following 7 parameters if mentioned (return null if not found):
 
@@ -401,8 +550,11 @@ Response: {{"N": null, "P": null, "K": null, "temperature": null, "humidity": nu
             # Extract JSON from response
             json_match = re.search(r'\{[^{}]*\}', response_clean, re.DOTALL)
             if not json_match:
-                logger.warning(f"{self.name}: No JSON found in LLM response, using regex fallback")
-                return regex_extracted if any(v is not None for v in regex_extracted.values()) else self._empty_params()
+                logger.warning(f"{self.name}: No JSON found in LLM response, using heuristics fallback")
+                # Fallback: Use combined heuristics (Regex + Keywords)
+                result = self._empty_params()
+                result.update(combined_heuristics)
+                return result
 
             params = json.loads(json_match.group())
 
@@ -425,11 +577,82 @@ Response: {{"N": null, "P": null, "K": null, "temperature": null, "humidity": nu
             return params
 
         except json.JSONDecodeError as e:
-            logger.error(f"{self.name}: Failed to parse LLM JSON: {e}, using regex fallback")
-            return regex_extracted if any(v is not None for v in regex_extracted.values()) else self._empty_params()
+            logger.error(f"{self.name}: Failed to parse LLM JSON: {e}, using heuristics fallback")
+            result = self._empty_params()
+            result.update(combined_heuristics)
+            return result
         except Exception as e:
-            logger.error(f"{self.name}: LLM extraction failed: {e}, using regex fallback")
-            return regex_extracted if any(v is not None for v in regex_extracted.values()) else self._empty_params()
+            logger.error(f"{self.name}: LLM extraction failed: {e}, using heuristics fallback")
+            result = self._empty_params()
+            result.update(combined_heuristics)
+            return result
+
+    def _extract_parameters_from_keywords(self, query: str) -> Dict[str, float]:
+        """
+        Extract parameters based on keywords (Heuristic Fallback)
+        
+        Maps descriptive terms (clay, sandy, heavy rain) to approximate NPK/Climate values.
+        This provides robustness when LLM rate limits are hit.
+        
+        Args:
+            query: User query
+            
+        Returns:
+            Dict of extracted numeric parameters
+        """
+        extracted = {}
+        q = query.lower()
+        
+        # Soil Types
+        if "clay" in q:
+            # Clay holds water and nutrients well. Good for Rice/Jute.
+            extracted.update({"N": 80, "P": 40, "K": 40, "ph": 6.0})
+        elif "sandy" in q:
+            # Sandy drains water fast, low nutrients. Good for Maize/Melons.
+            extracted.update({"N": 20, "P": 20, "K": 20, "ph": 6.5, "rainfall": 50, "humidity": 40})
+        elif "black" in q or "black soil" in q:
+            # Black soil (Cotton soil). Rich in K, Ca, Mg.
+            extracted.update({"N": 60, "P": 40, "K": 80, "ph": 7.5})
+        elif "red" in q or "red soil" in q:
+            # Red soil. Iron rich, often acidic.
+            extracted.update({"N": 40, "P": 30, "K": 30, "ph": 5.5})
+        elif "loam" in q:
+            # Balanced soil.
+            extracted.update({"N": 60, "P": 50, "K": 50})
+            
+        # Climate Conditions
+        if "heavy rain" in q or "monsoon" in q or "flood" in q or "wet" in q:
+            extracted["rainfall"] = 250
+            extracted["humidity"] = 85
+        elif "dry" in q or "desert" in q or "arid" in q:
+            extracted["rainfall"] = 20
+            extracted["humidity"] = 30
+            if "temperature" not in extracted:
+                extracted["temperature"] = 35 # Assume hot unless specified
+                
+        if "hot" in q or "summer" in q:
+            extracted["temperature"] = 32
+        elif "cold" in q or "winter" in q:
+            extracted["temperature"] = 15
+        elif "humid" in q:
+            extracted["humidity"] = 80
+            
+        # Specific Crop Hints (Self-reinforcing logic)
+        # If user asks about 'growing rice', give them rice-friendly params
+        # This helps the ML model confirm the user's intent even if params are vague
+        if "rice" in q or "paddy" in q:
+            extracted.update({"N": 80, "P": 40, "K": 40, "rainfall": 200, "temperature": 25})
+        elif "cotton" in q:
+            extracted.update({"N": 120, "P": 40, "K": 20, "rainfall": 80, "temperature": 30})
+        elif "maize" in q or "corn" in q:
+            extracted.update({"N": 80, "P": 40, "K": 20, "rainfall": 100})
+        elif "fruit" in q or "fruits" in q:
+            # Generic fruit params (often moderate N, P, K)
+            extracted.update({"N": 40, "P": 40, "K": 60})
+            
+        logger.info(f"{self.name}: Keyword heuristics extracted: {extracted}")
+        return extracted
+
 
     def _extract_parameters_with_regex(self, query: str) -> Dict[str, Optional[float]]:
         """
@@ -623,6 +846,43 @@ Response: {{"N": null, "P": null, "K": null, "temperature": null, "humidity": nu
                 )
 
         return errors
+
+    def _detect_multi_crop_request(self, query: str) -> int:
+        """
+        Detect if user is asking for multiple crop recommendations.
+        
+        Patterns detected:
+        - "5 best crops for Punjab"
+        - "top 3 crops for my area"
+        - "suggest multiple crops"
+        - "several crop options"
+        - "list of crops"
+        
+        Returns:
+            Number of crops requested (1 if single crop, 3-5 if multiple)
+        """
+        query_lower = query.lower()
+        
+        # Pattern 1: Explicit number (e.g., "5 best crops", "top 3 crops")
+        import re
+        number_match = re.search(r'(?:top|best|suggest|recommend)\s*(\d+)\s*(?:crops?|options?)', query_lower)
+        if number_match:
+            count = int(number_match.group(1))
+            return min(count, 10)  # Cap at 10
+        
+        # Pattern 2: Reverse order (e.g., "5 crops", "3 crop options")
+        reverse_match = re.search(r'(\d+)\s*(?:best|top)?\s*crops?', query_lower)
+        if reverse_match:
+            count = int(reverse_match.group(1))
+            return min(count, 10)
+        
+        # Pattern 3: Keywords for multiple (default to 5)
+        multi_keywords = ['multiple', 'several', 'few', 'some', 'list of', 'various', 'different']
+        if any(kw in query_lower for kw in multi_keywords):
+            return 5
+        
+        # Default: single crop
+        return 1
 
     def _detect_user_crop_preference(self, query: str) -> Optional[str]:
         """

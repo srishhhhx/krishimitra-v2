@@ -1,0 +1,109 @@
+{
+  "_metadata": {
+    "description": "Hindi/Hinglish to English mappings for fertilizer agent parameter extraction",
+    "usage": "Used by FertilizerAgent for Hindi crop/soil normalization",
+    "last_updated": "2026-01-04"
+  },
+  
+  "hindi_to_english_crop": {
+    "गेहूं": "wheat",
+    "गेंहू": "wheat",
+    "धान": "paddy",
+    "चावल": "rice",
+    "मक्का": "maize",
+    "भुट्टा": "maize",
+    "कौर्न": "maize",
+    "चना": "pulses",
+    "अरहर": "pulses",
+    "सोयाबीन": "oil seeds",
+    "सरसों": "oil seeds",
+    "कपास": "cotton",
+    "गन्ना": "sugarcane",
+    "तंबाकू": "tobacco",
+    "जौ": "barley",
+    "बाजरा": "millets",
+    "मूंगफली": "ground nuts"
+  },
+  
+  "hindi_to_english_soil": {
+    "काली मिट्टी": "black",
+    "काली": "black",
+    "लोमी मिट्टी": "loamy",
+    "लोमी": "loamy",
+    "बलुई मिट्टी": "sandy",
+    "बलुई": "sandy",
+    "रेतीली मिट्टी": "sandy",
+    "रेतीली": "sandy",
+    "लाल मिट्टी": "red",
+    "लाल": "red",
+    "चिकनी मिट्टी": "clayey",
+    "चिकनी": "clayey"
+  },
+  
+  "hindi_soil_patterns": [
+    "(काली|लोमी|बलुई|रेतीली|लाल|चिकनी)\\s*(मिट्टी)?"
+  ],
+  
+  "hindi_crop_patterns": [
+    "(गेहूं|गेंहू|धान|चावल|मक्का|भुट्टा|कौर्न|चना|अरहर|सोयाबीन|सरसों|कपास|गन्ना|तंबाकू|जौ|बाजरा|मूंगफली)"
+  ],
+  
+  "field_metadata": {
+    "soil_type": {
+      "type": "enum",
+      "description": "Your soil type (sandy/loamy/black/red/clayey)",
+      "allowed_values": ["sandy", "loamy", "black", "red", "clayey"],
+      "resolution_strategy": "normalize"
+    },
+    "crop_type": {
+      "type": "string",
+      "description": "Which crop are you growing? (wheat/rice/maize/cotton/sugarcane/etc.)",
+      "resolution_strategy": "normalize"
+    },
+    "temperature": {
+      "type": "float",
+      "description": "Average temperature in °C (optional, default: 25.0°C)",
+      "resolution_strategy": "replace",
+      "default": 25.0
+    },
+    "humidity": {
+      "type": "float",
+      "description": "Average humidity in % (optional, default: 60.0%)",
+      "resolution_strategy": "replace", 
+      "default": 60.0
+    },
+    "moisture": {
+      "type": "float",
+      "description": "Soil moisture in % (optional, default: 50.0%)",
+      "resolution_strategy": "replace",
+      "default": 50.0
+    },
+    "nitrogen": {
+      "type": "float",
+      "description": "Nitrogen content in kg/ha (optional, default: 40.0)",
+      "resolution_strategy": "replace",
+      "default": 40.0
+    },
+    "phosphorous": {
+      "type": "float",
+      "description": "Phosphorous content in kg/ha (optional, default: 30.0)",
+      "resolution_strategy": "replace",
+      "default": 30.0
+    },
+    "potassium": {
+      "type": "float",
+      "description": "Potassium content in kg/ha (optional, default: 30.0)",
+      "resolution_strategy": "replace",
+      "default": 30.0
+    }
+  },
+  
+  "defaults": {
+    "temperature": 25.0,
+    "humidity": 60.0,
+    "moisture": 50.0,
+    "nitrogen": 40.0,
+    "phosphorous": 30.0,
+    "potassium": 30.0
+  }
+}

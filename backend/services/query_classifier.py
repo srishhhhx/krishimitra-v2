@@ -41,6 +41,7 @@ KEYWORD_PATTERNS = {
             r"\bplant\s+(what|which)\s+crop\b",
             r"\b(N|nitrogen).*\b(P|phosphorus).*\b(K|potassium).*\b(what|which)?\s*crop\b",  # NPK + crop
             r"\b(temperature|humidity|rainfall|ph).*\bcrop\b",  # Climate params + crop
+            r"\b(sandy|loamy|black|red|clay|clayey)\s+soil\b",  # Soil type query
         ],
         "hi": [
             r"\bफसल\s+(सुझाव|सिफारिश|चुनाव)\b",

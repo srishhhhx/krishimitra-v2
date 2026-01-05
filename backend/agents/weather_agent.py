@@ -8,11 +8,12 @@ weather data via MCP server.
 Key Features:
 - LLM-based location extraction (cities, states, regions)
 - Hindi/Hinglish language support
-- Indian cities geocoding database
+- Indian cities geocoding database (loaded from JSON)
 - Weather data caching (15-min TTL)
 - Agricultural weather insights
 """
 import json
+import os
 import re
 from typing import Dict, Any, Optional
 
@@ -25,88 +26,39 @@ logger = get_logger(__name__)
 
 
 # ============================================================================
-# Indian Cities Geocoding Database
+# Load Indian Cities Geocoding Database from JSON
 # ============================================================================
 
-# Major Indian cities with coordinates
-INDIAN_CITIES = {
-    # Karnataka
-    "bangalore": {"lat": 12.9716, "lon": 77.5946, "state": "Karnataka"},
-    "bengaluru": {"lat": 12.9716, "lon": 77.5946, "state": "Karnataka"},
-    "mysore": {"lat": 12.2958, "lon": 76.6394, "state": "Karnataka"},
-    "mangalore": {"lat": 12.9141, "lon": 74.8560, "state": "Karnataka"},
+def _load_indian_cities() -> Dict[str, Dict[str, Any]]:
+    """
+    Load Indian cities geocoding data from JSON file.
+    Returns flat dictionary with all locations (cities, states, aliases) merged.
+    """
+    json_path = os.path.join(os.path.dirname(__file__), "..", "data", "indian_cities.json")
+    
+    try:
+        with open(json_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        
+        # Merge all categories into single flat dict
+        cities = {}
+        for category in ["cities", "states", "northeast", "hill_states", "aliases"]:
+            if category in data:
+                cities.update(data[category])
+        
+        logger.info(f"Loaded {len(cities)} locations from indian_cities.json")
+        return cities
+        
+    except FileNotFoundError:
+        logger.error(f"Cities JSON file not found: {json_path}")
+        return {}
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to parse cities JSON: {e}")
+        return {}
 
-    # Maharashtra
-    "mumbai": {"lat": 19.0760, "lon": 72.8777, "state": "Maharashtra"},
-    "pune": {"lat": 18.5204, "lon": 73.8567, "state": "Maharashtra"},
-    "nagpur": {"lat": 21.1458, "lon": 79.0882, "state": "Maharashtra"},
+# Load cities at module load time (cached)
+INDIAN_CITIES = _load_indian_cities()
 
-    # Delhi NCR
-    "delhi": {"lat": 28.6139, "lon": 77.2090, "state": "Delhi"},
-    "new delhi": {"lat": 28.6139, "lon": 77.2090, "state": "Delhi"},
-    "gurgaon": {"lat": 28.4595, "lon": 77.0266, "state": "Haryana"},
-    "noida": {"lat": 28.5355, "lon": 77.3910, "state": "Uttar Pradesh"},
-
-    # Tamil Nadu
-    "chennai": {"lat": 13.0827, "lon": 80.2707, "state": "Tamil Nadu"},
-    "coimbatore": {"lat": 11.0168, "lon": 76.9558, "state": "Tamil Nadu"},
-    "madurai": {"lat": 9.9252, "lon": 78.1198, "state": "Tamil Nadu"},
-
-    # Kerala
-    "kochi": {"lat": 9.9312, "lon": 76.2673, "state": "Kerala"},
-    "thiruvananthapuram": {"lat": 8.5241, "lon": 76.9366, "state": "Kerala"},
-    "kozhikode": {"lat": 11.2588, "lon": 75.7804, "state": "Kerala"},
-
-    # Punjab
-    "ludhiana": {"lat": 30.9010, "lon": 75.8573, "state": "Punjab"},
-    "amritsar": {"lat": 31.6340, "lon": 74.8723, "state": "Punjab"},
-    "jalandhar": {"lat": 31.3260, "lon": 75.5762, "state": "Punjab"},
-
-    # Haryana
-    "chandigarh": {"lat": 30.7333, "lon": 76.7794, "state": "Chandigarh"},
-    "faridabad": {"lat": 28.4089, "lon": 77.3178, "state": "Haryana"},
-
-    # West Bengal
-    "kolkata": {"lat": 22.5726, "lon": 88.3639, "state": "West Bengal"},
-
-    # Gujarat
-    "ahmedabad": {"lat": 23.0225, "lon": 72.5714, "state": "Gujarat"},
-    "surat": {"lat": 21.1702, "lon": 72.8311, "state": "Gujarat"},
-
-    # Rajasthan
-    "jaipur": {"lat": 26.9124, "lon": 75.7873, "state": "Rajasthan"},
-    "udaipur": {"lat": 24.5854, "lon": 73.7125, "state": "Rajasthan"},
-
-    # Andhra Pradesh
-    "hyderabad": {"lat": 17.3850, "lon": 78.4867, "state": "Telangana"},
-    "vijayawada": {"lat": 16.5062, "lon": 80.6480, "state": "Andhra Pradesh"},
-
-    # Uttar Pradesh
-    "lucknow": {"lat": 26.8467, "lon": 80.9462, "state": "Uttar Pradesh"},
-    "agra": {"lat": 27.1767, "lon": 78.0081, "state": "Uttar Pradesh"},
-    "varanasi": {"lat": 25.3176, "lon": 82.9739, "state": "Uttar Pradesh"},
-
-    # Bihar
-    "patna": {"lat": 25.5941, "lon": 85.1376, "state": "Bihar"},
-
-    # Madhya Pradesh
-    "bhopal": {"lat": 23.2599, "lon": 77.4126, "state": "Madhya Pradesh"},
-    "indore": {"lat": 22.7196, "lon": 75.8577, "state": "Madhya Pradesh"},
-
-    # State capitals (use capital city coordinates)
-    "karnataka": {"lat": 12.9716, "lon": 77.5946, "state": "Karnataka"},
-    "maharashtra": {"lat": 19.0760, "lon": 72.8777, "state": "Maharashtra"},
-    "tamil nadu": {"lat": 13.0827, "lon": 80.2707, "state": "Tamil Nadu"},
-    "kerala": {"lat": 9.9312, "lon": 76.2673, "state": "Kerala"},
-    "punjab": {"lat": 30.7333, "lon": 76.7794, "state": "Punjab"},
-    "haryana": {"lat": 30.7333, "lon": 76.7794, "state": "Haryana"},
-    "west bengal": {"lat": 22.5726, "lon": 88.3639, "state": "West Bengal"},
-    "gujarat": {"lat": 23.0225, "lon": 72.5714, "state": "Gujarat"},
-    "rajasthan": {"lat": 26.9124, "lon": 75.7873, "state": "Rajasthan"},
-    "uttar pradesh": {"lat": 26.8467, "lon": 80.9462, "state": "Uttar Pradesh"},
-    "bihar": {"lat": 25.5941, "lon": 85.1376, "state": "Bihar"},
-    "madhya pradesh": {"lat": 23.2599, "lon": 77.4126, "state": "Madhya Pradesh"},
-}
 
 
 class WeatherAgent(ToolAgent):
@@ -178,16 +130,23 @@ class WeatherAgent(ToolAgent):
 
             logger.info(f"{self.name}: Processing query: {query[:100]}...")
 
-            # Phase 0: Resolve contextual references (BUG FIX #3)
-            resolved_query, resolved_location = self._resolve_location_references(query, state)
-            if resolved_location:
-                logger.info(f"{self.name}: Resolved contextual reference → {resolved_location}")
-                # Skip LLM extraction - use resolved location directly
-                location_info = {"location": resolved_location}
+            # Phase 0: Check for supervisor-extracted location FIRST (LLM consolidation)
+            supervisor_location = state.get("user_context", {}).get("location")
+            if supervisor_location:
+                logger.info(f"{self.name}: Using supervisor-extracted location: {supervisor_location}")
+                location_info = {"location": supervisor_location}
             else:
-                # Phase 1: Extract location from query using LLM
-                location_info = await self._extract_location_with_llm(resolved_query)
-                logger.info(f"{self.name}: Extracted location: {location_info}")
+                # Phase 0.5: Resolve contextual references (BUG FIX #3)
+                resolved_query, resolved_location = self._resolve_location_references(query, state)
+                if resolved_location:
+                    logger.info(f"{self.name}: Resolved contextual reference → {resolved_location}")
+                    # Skip LLM extraction - use resolved location directly
+                    location_info = {"location": resolved_location}
+                else:
+                    # Phase 1: Extract location from query using LLM (fallback only)
+                    logger.info(f"{self.name}: No supervisor location, using LLM extraction")
+                    location_info = await self._extract_location_with_llm(resolved_query)
+                    logger.info(f"{self.name}: LLM extracted location: {location_info}")
 
             if not location_info or not location_info.get("location"):
                 # No location found - ask for clarification

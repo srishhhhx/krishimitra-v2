@@ -31,9 +31,14 @@ import sys
 from pathlib import Path
 from typing import Dict, Any, List
 from datetime import datetime
+from dotenv import load_dotenv
 
 # Add backend to path
 sys.path.insert(0, str(Path(__file__).parent))
+
+# Load .env file from the same directory as the script
+dotenv_path = Path(__file__).parent / '.env'
+load_dotenv(dotenv_path=dotenv_path)
 
 from services.orchestrator import orchestrator
 from core.logging import get_logger

@@ -1,0 +1,304 @@
+{
+  "_metadata": {
+    "description": "Regional soil characteristics for major Indian districts/cities",
+    "source": "Aggregated from ICAR soil surveys and state agriculture reports",
+    "usage": "Used by WeatherAgent/RegionalDataService to infer NPK values from location",
+    "last_updated": "2026-01-04",
+    "note": "NPK values are typical ranges - actual values vary by field"
+  },
+  
+  "regions": {
+    "karnataka": {
+      "bangalore": {"soil_type": "red", "N": 35, "P": 25, "K": 30, "ph": 5.8},
+      "bengaluru": {"soil_type": "red", "N": 35, "P": 25, "K": 30, "ph": 5.8},
+      "mysore": {"soil_type": "red", "N": 40, "P": 30, "K": 35, "ph": 6.0},
+      "mysuru": {"soil_type": "red", "N": 40, "P": 30, "K": 35, "ph": 6.0},
+      "hubli": {"soil_type": "black", "N": 55, "P": 35, "K": 70, "ph": 7.5},
+      "dharwad": {"soil_type": "black", "N": 55, "P": 35, "K": 70, "ph": 7.5},
+      "belgaum": {"soil_type": "black", "N": 50, "P": 35, "K": 65, "ph": 7.2},
+      "belagavi": {"soil_type": "black", "N": 50, "P": 35, "K": 65, "ph": 7.2},
+      "mangalore": {"soil_type": "laterite", "N": 30, "P": 20, "K": 25, "ph": 5.5},
+      "gulbarga": {"soil_type": "black", "N": 60, "P": 40, "K": 80, "ph": 7.8},
+      "kalaburagi": {"soil_type": "black", "N": 60, "P": 40, "K": 80, "ph": 7.8},
+      "shimoga": {"soil_type": "red", "N": 40, "P": 30, "K": 35, "ph": 6.0},
+      "davangere": {"soil_type": "black", "N": 55, "P": 35, "K": 70, "ph": 7.4},
+      "bellary": {"soil_type": "black", "N": 55, "P": 35, "K": 75, "ph": 7.5},
+      "hassan": {"soil_type": "red", "N": 38, "P": 28, "K": 32, "ph": 5.9},
+      "tumkur": {"soil_type": "red", "N": 35, "P": 25, "K": 30, "ph": 5.8},
+      "chitradurga": {"soil_type": "red", "N": 35, "P": 25, "K": 30, "ph": 6.0},
+      "raichur": {"soil_type": "black", "N": 58, "P": 38, "K": 75, "ph": 7.6},
+      "bidar": {"soil_type": "black", "N": 55, "P": 35, "K": 70, "ph": 7.4},
+      "karnataka": {"soil_type": "red", "N": 40, "P": 30, "K": 35, "ph": 6.0}
+    },
+    
+    "maharashtra": {
+      "mumbai": {"soil_type": "laterite", "N": 30, "P": 22, "K": 28, "ph": 5.5},
+      "pune": {"soil_type": "black", "N": 55, "P": 38, "K": 70, "ph": 7.3},
+      "nagpur": {"soil_type": "black", "N": 60, "P": 40, "K": 80, "ph": 7.8},
+      "nashik": {"soil_type": "red", "N": 38, "P": 28, "K": 32, "ph": 6.2},
+      "aurangabad": {"soil_type": "black", "N": 58, "P": 38, "K": 75, "ph": 7.5},
+      "solapur": {"soil_type": "black", "N": 55, "P": 35, "K": 70, "ph": 7.4},
+      "kolhapur": {"soil_type": "laterite", "N": 35, "P": 25, "K": 30, "ph": 5.8},
+      "sangli": {"soil_type": "black", "N": 50, "P": 35, "K": 65, "ph": 7.2},
+      "satara": {"soil_type": "laterite", "N": 35, "P": 25, "K": 30, "ph": 6.0},
+      "ahmednagar": {"soil_type": "black", "N": 55, "P": 35, "K": 70, "ph": 7.3},
+      "jalgaon": {"soil_type": "black", "N": 58, "P": 38, "K": 75, "ph": 7.5},
+      "amravati": {"soil_type": "black", "N": 60, "P": 40, "K": 80, "ph": 7.6},
+      "akola": {"soil_type": "black", "N": 58, "P": 38, "K": 78, "ph": 7.6},
+      "yavatmal": {"soil_type": "black", "N": 55, "P": 35, "K": 75, "ph": 7.5},
+      "chandrapur": {"soil_type": "black", "N": 55, "P": 35, "K": 70, "ph": 7.4},
+      "vidarbha": {"soil_type": "black", "N": 58, "P": 38, "K": 78, "ph": 7.6},
+      "marathwada": {"soil_type": "black", "N": 55, "P": 35, "K": 72, "ph": 7.5},
+      "konkan": {"soil_type": "laterite", "N": 30, "P": 22, "K": 28, "ph": 5.5},
+      "maharashtra": {"soil_type": "black", "N": 55, "P": 35, "K": 70, "ph": 7.4}
+    },
+    
+    "punjab": {
+      "ludhiana": {"soil_type": "alluvial", "N": 55, "P": 40, "K": 45, "ph": 7.2},
+      "amritsar": {"soil_type": "alluvial", "N": 50, "P": 38, "K": 42, "ph": 7.0},
+      "jalandhar": {"soil_type": "alluvial", "N": 55, "P": 40, "K": 45, "ph": 7.2},
+      "patiala": {"soil_type": "alluvial", "N": 52, "P": 38, "K": 44, "ph": 7.1},
+      "bathinda": {"soil_type": "alluvial", "N": 48, "P": 35, "K": 40, "ph": 7.5},
+      "mohali": {"soil_type": "alluvial", "N": 50, "P": 38, "K": 42, "ph": 7.0},
+      "ferozepur": {"soil_type": "alluvial", "N": 50, "P": 38, "K": 42, "ph": 7.3},
+      "moga": {"soil_type": "alluvial", "N": 55, "P": 40, "K": 45, "ph": 7.2},
+      "sangrur": {"soil_type": "alluvial", "N": 52, "P": 38, "K": 44, "ph": 7.2},
+      "punjab": {"soil_type": "alluvial", "N": 52, "P": 38, "K": 44, "ph": 7.2}
+    },
+    
+    "haryana": {
+      "chandigarh": {"soil_type": "alluvial", "N": 50, "P": 38, "K": 42, "ph": 7.0},
+      "gurgaon": {"soil_type": "alluvial", "N": 45, "P": 35, "K": 40, "ph": 7.3},
+      "gurugram": {"soil_type": "alluvial", "N": 45, "P": 35, "K": 40, "ph": 7.3},
+      "faridabad": {"soil_type": "alluvial", "N": 45, "P": 35, "K": 40, "ph": 7.2},
+      "karnal": {"soil_type": "alluvial", "N": 55, "P": 40, "K": 45, "ph": 7.0},
+      "panipat": {"soil_type": "alluvial", "N": 52, "P": 38, "K": 44, "ph": 7.1},
+      "hisar": {"soil_type": "alluvial", "N": 48, "P": 35, "K": 40, "ph": 7.5},
+      "rohtak": {"soil_type": "alluvial", "N": 50, "P": 38, "K": 42, "ph": 7.2},
+      "ambala": {"soil_type": "alluvial", "N": 52, "P": 38, "K": 44, "ph": 7.0},
+      "haryana": {"soil_type": "alluvial", "N": 50, "P": 38, "K": 42, "ph": 7.2}
+    },
+    
+    "uttar_pradesh": {
+      "lucknow": {"soil_type": "alluvial", "N": 55, "P": 42, "K": 48, "ph": 7.2},
+      "noida": {"soil_type": "alluvial", "N": 50, "P": 38, "K": 45, "ph": 7.0},
+      "agra": {"soil_type": "alluvial", "N": 52, "P": 40, "K": 46, "ph": 7.3},
+      "varanasi": {"soil_type": "alluvial", "N": 58, "P": 45, "K": 50, "ph": 7.0},
+      "kanpur": {"soil_type": "alluvial", "N": 55, "P": 42, "K": 48, "ph": 7.1},
+      "allahabad": {"soil_type": "alluvial", "N": 58, "P": 45, "K": 50, "ph": 7.0},
+      "prayagraj": {"soil_type": "alluvial", "N": 58, "P": 45, "K": 50, "ph": 7.0},
+      "gorakhpur": {"soil_type": "alluvial", "N": 60, "P": 48, "K": 52, "ph": 6.8},
+      "meerut": {"soil_type": "alluvial", "N": 55, "P": 42, "K": 48, "ph": 7.2},
+      "bareilly": {"soil_type": "alluvial", "N": 55, "P": 42, "K": 48, "ph": 7.0},
+      "moradabad": {"soil_type": "alluvial", "N": 52, "P": 40, "K": 46, "ph": 7.1},
+      "ghaziabad": {"soil_type": "alluvial", "N": 50, "P": 38, "K": 45, "ph": 7.0},
+      "mathura": {"soil_type": "alluvial", "N": 52, "P": 40, "K": 46, "ph": 7.3},
+      "uttar pradesh": {"soil_type": "alluvial", "N": 55, "P": 42, "K": 48, "ph": 7.1}
+    },
+    
+    "rajasthan": {
+      "jaipur": {"soil_type": "sandy", "N": 22, "P": 18, "K": 22, "ph": 7.5},
+      "jodhpur": {"soil_type": "sandy", "N": 18, "P": 15, "K": 18, "ph": 7.8},
+      "udaipur": {"soil_type": "red", "N": 35, "P": 28, "K": 32, "ph": 6.5},
+      "kota": {"soil_type": "black", "N": 50, "P": 35, "K": 65, "ph": 7.5},
+      "ajmer": {"soil_type": "sandy", "N": 22, "P": 18, "K": 22, "ph": 7.5},
+      "bikaner": {"soil_type": "sandy", "N": 15, "P": 12, "K": 15, "ph": 8.0},
+      "alwar": {"soil_type": "alluvial", "N": 42, "P": 32, "K": 38, "ph": 7.2},
+      "bharatpur": {"soil_type": "alluvial", "N": 45, "P": 35, "K": 40, "ph": 7.3},
+      "ganganagar": {"soil_type": "alluvial", "N": 48, "P": 38, "K": 42, "ph": 7.5},
+      "rajasthan": {"soil_type": "sandy", "N": 22, "P": 18, "K": 22, "ph": 7.6}
+    },
+    
+    "gujarat": {
+      "ahmedabad": {"soil_type": "alluvial", "N": 48, "P": 38, "K": 45, "ph": 7.3},
+      "surat": {"soil_type": "alluvial", "N": 52, "P": 40, "K": 48, "ph": 7.0},
+      "vadodara": {"soil_type": "black", "N": 55, "P": 38, "K": 70, "ph": 7.5},
+      "baroda": {"soil_type": "black", "N": 55, "P": 38, "K": 70, "ph": 7.5},
+      "rajkot": {"soil_type": "black", "N": 52, "P": 35, "K": 68, "ph": 7.6},
+      "bhavnagar": {"soil_type": "black", "N": 50, "P": 35, "K": 65, "ph": 7.5},
+      "junagadh": {"soil_type": "black", "N": 50, "P": 35, "K": 65, "ph": 7.4},
+      "gandhinagar": {"soil_type": "alluvial", "N": 48, "P": 38, "K": 45, "ph": 7.3},
+      "kutch": {"soil_type": "sandy", "N": 20, "P": 15, "K": 20, "ph": 8.0},
+      "gujarat": {"soil_type": "black", "N": 50, "P": 35, "K": 65, "ph": 7.4}
+    },
+    
+    "madhya_pradesh": {
+      "bhopal": {"soil_type": "black", "N": 55, "P": 38, "K": 72, "ph": 7.5},
+      "indore": {"soil_type": "black", "N": 58, "P": 40, "K": 78, "ph": 7.6},
+      "jabalpur": {"soil_type": "black", "N": 55, "P": 38, "K": 70, "ph": 7.4},
+      "gwalior": {"soil_type": "alluvial", "N": 50, "P": 38, "K": 45, "ph": 7.2},
+      "ujjain": {"soil_type": "black", "N": 58, "P": 40, "K": 78, "ph": 7.6},
+      "rewa": {"soil_type": "red", "N": 40, "P": 30, "K": 35, "ph": 6.5},
+      "satna": {"soil_type": "red", "N": 40, "P": 30, "K": 35, "ph": 6.5},
+      "sagar": {"soil_type": "black", "N": 55, "P": 38, "K": 70, "ph": 7.4},
+      "madhya pradesh": {"soil_type": "black", "N": 55, "P": 38, "K": 72, "ph": 7.5}
+    },
+    
+    "tamil_nadu": {
+      "chennai": {"soil_type": "alluvial", "N": 45, "P": 35, "K": 40, "ph": 7.0},
+      "coimbatore": {"soil_type": "red", "N": 38, "P": 28, "K": 32, "ph": 6.2},
+      "madurai": {"soil_type": "red", "N": 40, "P": 30, "K": 35, "ph": 6.5},
+      "trichy": {"soil_type": "red", "N": 42, "P": 32, "K": 38, "ph": 6.5},
+      "tiruchirappalli": {"soil_type": "red", "N": 42, "P": 32, "K": 38, "ph": 6.5},
+      "salem": {"soil_type": "red", "N": 38, "P": 28, "K": 32, "ph": 6.0},
+      "tirunelveli": {"soil_type": "red", "N": 35, "P": 25, "K": 30, "ph": 6.2},
+      "erode": {"soil_type": "red", "N": 38, "P": 28, "K": 32, "ph": 6.2},
+      "vellore": {"soil_type": "red", "N": 38, "P": 28, "K": 32, "ph": 6.5},
+      "thanjavur": {"soil_type": "alluvial", "N": 55, "P": 42, "K": 48, "ph": 7.0},
+      "tamil nadu": {"soil_type": "red", "N": 40, "P": 30, "K": 35, "ph": 6.3}
+    },
+    
+    "kerala": {
+      "kochi": {"soil_type": "laterite", "N": 28, "P": 18, "K": 22, "ph": 5.2},
+      "thiruvananthapuram": {"soil_type": "laterite", "N": 25, "P": 15, "K": 20, "ph": 5.0},
+      "kozhikode": {"soil_type": "laterite", "N": 28, "P": 18, "K": 22, "ph": 5.2},
+      "thrissur": {"soil_type": "laterite", "N": 28, "P": 18, "K": 22, "ph": 5.3},
+      "kannur": {"soil_type": "laterite", "N": 25, "P": 15, "K": 20, "ph": 5.0},
+      "palakkad": {"soil_type": "red", "N": 35, "P": 25, "K": 30, "ph": 5.8},
+      "malappuram": {"soil_type": "laterite", "N": 28, "P": 18, "K": 22, "ph": 5.2},
+      "kollam": {"soil_type": "laterite", "N": 25, "P": 15, "K": 20, "ph": 5.0},
+      "kerala": {"soil_type": "laterite", "N": 28, "P": 18, "K": 22, "ph": 5.2}
+    },
+    
+    "andhra_pradesh": {
+      "hyderabad": {"soil_type": "red", "N": 40, "P": 30, "K": 35, "ph": 6.5},
+      "vijayawada": {"soil_type": "alluvial", "N": 55, "P": 42, "K": 48, "ph": 7.0},
+      "visakhapatnam": {"soil_type": "red", "N": 38, "P": 28, "K": 32, "ph": 6.2},
+      "vizag": {"soil_type": "red", "N": 38, "P": 28, "K": 32, "ph": 6.2},
+      "tirupati": {"soil_type": "red", "N": 35, "P": 25, "K": 30, "ph": 6.0},
+      "guntur": {"soil_type": "black", "N": 55, "P": 38, "K": 70, "ph": 7.5},
+      "nellore": {"soil_type": "alluvial", "N": 50, "P": 38, "K": 45, "ph": 7.0},
+      "kurnool": {"soil_type": "black", "N": 55, "P": 38, "K": 70, "ph": 7.5},
+      "anantapur": {"soil_type": "red", "N": 35, "P": 25, "K": 30, "ph": 6.5},
+      "andhra pradesh": {"soil_type": "red", "N": 42, "P": 32, "K": 38, "ph": 6.5}
+    },
+    
+    "telangana": {
+      "hyderabad": {"soil_type": "red", "N": 40, "P": 30, "K": 35, "ph": 6.5},
+      "warangal": {"soil_type": "red", "N": 38, "P": 28, "K": 32, "ph": 6.2},
+      "nizamabad": {"soil_type": "black", "N": 55, "P": 38, "K": 70, "ph": 7.5},
+      "karimnagar": {"soil_type": "red", "N": 40, "P": 30, "K": 35, "ph": 6.5},
+      "khammam": {"soil_type": "red", "N": 38, "P": 28, "K": 32, "ph": 6.2},
+      "nalgonda": {"soil_type": "red", "N": 40, "P": 30, "K": 35, "ph": 6.5},
+      "telangana": {"soil_type": "red", "N": 40, "P": 30, "K": 35, "ph": 6.4}
+    },
+    
+    "west_bengal": {
+      "kolkata": {"soil_type": "alluvial", "N": 60, "P": 48, "K": 55, "ph": 6.8},
+      "howrah": {"soil_type": "alluvial", "N": 58, "P": 45, "K": 52, "ph": 6.8},
+      "darjeeling": {"soil_type": "mountain", "N": 45, "P": 35, "K": 40, "ph": 5.5},
+      "siliguri": {"soil_type": "alluvial", "N": 55, "P": 42, "K": 48, "ph": 6.5},
+      "asansol": {"soil_type": "alluvial", "N": 55, "P": 42, "K": 48, "ph": 6.8},
+      "durgapur": {"soil_type": "alluvial", "N": 55, "P": 42, "K": 48, "ph": 6.8},
+      "bardhaman": {"soil_type": "alluvial", "N": 58, "P": 45, "K": 52, "ph": 6.8},
+      "murshidabad": {"soil_type": "alluvial", "N": 60, "P": 48, "K": 55, "ph": 6.8},
+      "west bengal": {"soil_type": "alluvial", "N": 58, "P": 45, "K": 52, "ph": 6.8}
+    },
+    
+    "bihar": {
+      "patna": {"soil_type": "alluvial", "N": 60, "P": 48, "K": 55, "ph": 7.0},
+      "gaya": {"soil_type": "alluvial", "N": 55, "P": 42, "K": 50, "ph": 7.0},
+      "muzaffarpur": {"soil_type": "alluvial", "N": 62, "P": 50, "K": 58, "ph": 6.8},
+      "bhagalpur": {"soil_type": "alluvial", "N": 58, "P": 45, "K": 52, "ph": 7.0},
+      "purnia": {"soil_type": "alluvial", "N": 60, "P": 48, "K": 55, "ph": 6.8},
+      "darbhanga": {"soil_type": "alluvial", "N": 62, "P": 50, "K": 58, "ph": 6.8},
+      "bihar": {"soil_type": "alluvial", "N": 60, "P": 48, "K": 55, "ph": 6.9}
+    },
+    
+    "odisha": {
+      "bhubaneswar": {"soil_type": "laterite", "N": 32, "P": 22, "K": 28, "ph": 5.5},
+      "cuttack": {"soil_type": "alluvial", "N": 55, "P": 42, "K": 48, "ph": 6.5},
+      "rourkela": {"soil_type": "red", "N": 38, "P": 28, "K": 32, "ph": 5.8},
+      "puri": {"soil_type": "alluvial", "N": 50, "P": 38, "K": 45, "ph": 6.8},
+      "sambalpur": {"soil_type": "red", "N": 38, "P": 28, "K": 32, "ph": 5.8},
+      "odisha": {"soil_type": "laterite", "N": 35, "P": 25, "K": 30, "ph": 5.8}
+    },
+    
+    "assam": {
+      "guwahati": {"soil_type": "alluvial", "N": 55, "P": 40, "K": 45, "ph": 5.5},
+      "dibrugarh": {"soil_type": "alluvial", "N": 58, "P": 42, "K": 48, "ph": 5.2},
+      "jorhat": {"soil_type": "alluvial", "N": 58, "P": 42, "K": 48, "ph": 5.2},
+      "silchar": {"soil_type": "alluvial", "N": 55, "P": 40, "K": 45, "ph": 5.5},
+      "tezpur": {"soil_type": "alluvial", "N": 55, "P": 40, "K": 45, "ph": 5.5},
+      "assam": {"soil_type": "alluvial", "N": 55, "P": 40, "K": 45, "ph": 5.4}
+    },
+    
+    "delhi": {
+      "delhi": {"soil_type": "alluvial", "N": 48, "P": 38, "K": 42, "ph": 7.2},
+      "new delhi": {"soil_type": "alluvial", "N": 48, "P": 38, "K": 42, "ph": 7.2}
+    },
+    
+    "chattisgarh": {
+      "raipur": {"soil_type": "red", "N": 40, "P": 30, "K": 35, "ph": 6.0},
+      "bilaspur": {"soil_type": "red", "N": 38, "P": 28, "K": 32, "ph": 6.0},
+      "durg": {"soil_type": "black", "N": 55, "P": 38, "K": 70, "ph": 7.4},
+      "korba": {"soil_type": "red", "N": 38, "P": 28, "K": 32, "ph": 6.0},
+      "chhattisgarh": {"soil_type": "red", "N": 40, "P": 30, "K": 35, "ph": 6.2}
+    },
+    
+    "jharkhand": {
+      "ranchi": {"soil_type": "red", "N": 35, "P": 25, "K": 30, "ph": 5.5},
+      "jamshedpur": {"soil_type": "red", "N": 35, "P": 25, "K": 30, "ph": 5.5},
+      "dhanbad": {"soil_type": "red", "N": 35, "P": 25, "K": 30, "ph": 5.8},
+      "bokaro": {"soil_type": "red", "N": 35, "P": 25, "K": 30, "ph": 5.8},
+      "jharkhand": {"soil_type": "red", "N": 35, "P": 25, "K": 30, "ph": 5.6}
+    },
+    
+    "uttarakhand": {
+      "dehradun": {"soil_type": "alluvial", "N": 50, "P": 38, "K": 42, "ph": 6.5},
+      "haridwar": {"soil_type": "alluvial", "N": 52, "P": 40, "K": 45, "ph": 7.0},
+      "nainital": {"soil_type": "mountain", "N": 45, "P": 35, "K": 40, "ph": 5.8},
+      "uttarakhand": {"soil_type": "alluvial", "N": 48, "P": 38, "K": 42, "ph": 6.5}
+    },
+    
+    "himachal_pradesh": {
+      "shimla": {"soil_type": "mountain", "N": 45, "P": 35, "K": 40, "ph": 5.5},
+      "manali": {"soil_type": "mountain", "N": 42, "P": 32, "K": 38, "ph": 5.5},
+      "dharamshala": {"soil_type": "mountain", "N": 45, "P": 35, "K": 40, "ph": 5.8},
+      "himachal pradesh": {"soil_type": "mountain", "N": 45, "P": 35, "K": 40, "ph": 5.6}
+    },
+    
+    "goa": {
+      "goa": {"soil_type": "laterite", "N": 28, "P": 18, "K": 22, "ph": 5.2},
+      "panaji": {"soil_type": "laterite", "N": 28, "P": 18, "K": 22, "ph": 5.2},
+      "margao": {"soil_type": "laterite", "N": 28, "P": 18, "K": 22, "ph": 5.2}
+    },
+    
+    "northeast": {
+      "meghalaya": {"soil_type": "mountain", "N": 45, "P": 35, "K": 40, "ph": 5.0},
+      "shillong": {"soil_type": "mountain", "N": 45, "P": 35, "K": 40, "ph": 5.0},
+      "nagaland": {"soil_type": "mountain", "N": 42, "P": 32, "K": 38, "ph": 5.2},
+      "kohima": {"soil_type": "mountain", "N": 42, "P": 32, "K": 38, "ph": 5.2},
+      "dimapur": {"soil_type": "alluvial", "N": 50, "P": 38, "K": 42, "ph": 5.5},
+      "mizoram": {"soil_type": "mountain", "N": 40, "P": 30, "K": 35, "ph": 5.0},
+      "aizawl": {"soil_type": "mountain", "N": 40, "P": 30, "K": 35, "ph": 5.0},
+      "manipur": {"soil_type": "mountain", "N": 42, "P": 32, "K": 38, "ph": 5.2},
+      "imphal": {"soil_type": "alluvial", "N": 48, "P": 36, "K": 40, "ph": 5.5},
+      "tripura": {"soil_type": "alluvial", "N": 50, "P": 38, "K": 42, "ph": 5.5},
+      "agartala": {"soil_type": "alluvial", "N": 50, "P": 38, "K": 42, "ph": 5.5},
+      "arunachal pradesh": {"soil_type": "mountain", "N": 38, "P": 28, "K": 32, "ph": 4.8},
+      "arunachalpradesh": {"soil_type": "mountain", "N": 38, "P": 28, "K": 32, "ph": 4.8},
+      "itanagar": {"soil_type": "mountain", "N": 38, "P": 28, "K": 32, "ph": 4.8},
+      "sikkim": {"soil_type": "mountain", "N": 45, "P": 35, "K": 40, "ph": 5.2},
+      "gangtok": {"soil_type": "mountain", "N": 45, "P": 35, "K": 40, "ph": 5.2}
+    },
+    
+    "jammu_kashmir": {
+      "jammu and kashmir": {"soil_type": "mountain", "N": 48, "P": 38, "K": 42, "ph": 6.5},
+      "jammu": {"soil_type": "alluvial", "N": 52, "P": 40, "K": 45, "ph": 7.0},
+      "srinagar": {"soil_type": "mountain", "N": 48, "P": 38, "K": 42, "ph": 6.5},
+      "ladakh": {"soil_type": "mountain", "N": 25, "P": 15, "K": 20, "ph": 7.5},
+      "leh": {"soil_type": "mountain", "N": 25, "P": 15, "K": 20, "ph": 7.5}
+    }
+  },
+  
+  "soil_type_characteristics": {
+    "sandy": {"description": "Drains fast, low nutrients, good for root vegetables", "water_retention": "low"},
+    "loamy": {"description": "Balanced, ideal for most crops", "water_retention": "medium"},
+    "black": {"description": "Cotton soil, rich in K/Ca/Mg, cracks when dry", "water_retention": "high"},
+    "red": {"description": "Iron-rich, often acidic, good for millets", "water_retention": "medium"},
+    "alluvial": {"description": "River deposits, fertile, good for cereals", "water_retention": "medium"},
+    "laterite": {"description": "Leached, acidic, needs lime", "water_retention": "low"},
+    "mountain": {"description": "Forest soil, humus-rich, acidic", "water_retention": "medium"}
+  }
+}

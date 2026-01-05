@@ -1,0 +1,130 @@
+{
+  "_metadata": {
+    "description": "Indian cities and states geocoding database for weather lookup",
+    "source": "OpenStreetMap coordinates",
+    "usage": "Used by WeatherAgent to convert location names to lat/lon",
+    "last_updated": "2026-01-04",
+    "note": "Keys are lowercase, includes common typos and old city names"
+  },
+  
+  "cities": {
+    "bangalore": {"lat": 12.9716, "lon": 77.5946, "state": "Karnataka"},
+    "bengaluru": {"lat": 12.9716, "lon": 77.5946, "state": "Karnataka"},
+    "mysore": {"lat": 12.2958, "lon": 76.6394, "state": "Karnataka"},
+    "mangalore": {"lat": 12.9141, "lon": 74.8560, "state": "Karnataka"},
+    
+    "mumbai": {"lat": 19.0760, "lon": 72.8777, "state": "Maharashtra"},
+    "pune": {"lat": 18.5204, "lon": 73.8567, "state": "Maharashtra"},
+    "nagpur": {"lat": 21.1458, "lon": 79.0882, "state": "Maharashtra"},
+    
+    "delhi": {"lat": 28.6139, "lon": 77.2090, "state": "Delhi"},
+    "new delhi": {"lat": 28.6139, "lon": 77.2090, "state": "Delhi"},
+    "gurgaon": {"lat": 28.4595, "lon": 77.0266, "state": "Haryana"},
+    "noida": {"lat": 28.5355, "lon": 77.3910, "state": "Uttar Pradesh"},
+    
+    "chennai": {"lat": 13.0827, "lon": 80.2707, "state": "Tamil Nadu"},
+    "coimbatore": {"lat": 11.0168, "lon": 76.9558, "state": "Tamil Nadu"},
+    "madurai": {"lat": 9.9252, "lon": 78.1198, "state": "Tamil Nadu"},
+    
+    "kochi": {"lat": 9.9312, "lon": 76.2673, "state": "Kerala"},
+    "thiruvananthapuram": {"lat": 8.5241, "lon": 76.9366, "state": "Kerala"},
+    "kozhikode": {"lat": 11.2588, "lon": 75.7804, "state": "Kerala"},
+    
+    "ludhiana": {"lat": 30.9010, "lon": 75.8573, "state": "Punjab"},
+    "amritsar": {"lat": 31.6340, "lon": 74.8723, "state": "Punjab"},
+    "jalandhar": {"lat": 31.3260, "lon": 75.5762, "state": "Punjab"},
+    
+    "chandigarh": {"lat": 30.7333, "lon": 76.7794, "state": "Chandigarh"},
+    "faridabad": {"lat": 28.4089, "lon": 77.3178, "state": "Haryana"},
+    
+    "kolkata": {"lat": 22.5726, "lon": 88.3639, "state": "West Bengal"},
+    
+    "ahmedabad": {"lat": 23.0225, "lon": 72.5714, "state": "Gujarat"},
+    "surat": {"lat": 21.1702, "lon": 72.8311, "state": "Gujarat"},
+    
+    "jaipur": {"lat": 26.9124, "lon": 75.7873, "state": "Rajasthan"},
+    "udaipur": {"lat": 24.5854, "lon": 73.7125, "state": "Rajasthan"},
+    
+    "hyderabad": {"lat": 17.3850, "lon": 78.4867, "state": "Telangana"},
+    "vijayawada": {"lat": 16.5062, "lon": 80.6480, "state": "Andhra Pradesh"},
+    
+    "lucknow": {"lat": 26.8467, "lon": 80.9462, "state": "Uttar Pradesh"},
+    "agra": {"lat": 27.1767, "lon": 78.0081, "state": "Uttar Pradesh"},
+    "varanasi": {"lat": 25.3176, "lon": 82.9739, "state": "Uttar Pradesh"},
+    
+    "patna": {"lat": 25.5941, "lon": 85.1376, "state": "Bihar"},
+    
+    "bhopal": {"lat": 23.2599, "lon": 77.4126, "state": "Madhya Pradesh"},
+    "indore": {"lat": 22.7196, "lon": 75.8577, "state": "Madhya Pradesh"}
+  },
+  
+  "states": {
+    "karnataka": {"lat": 12.9716, "lon": 77.5946, "state": "Karnataka"},
+    "maharashtra": {"lat": 19.0760, "lon": 72.8777, "state": "Maharashtra"},
+    "tamil nadu": {"lat": 13.0827, "lon": 80.2707, "state": "Tamil Nadu"},
+    "kerala": {"lat": 9.9312, "lon": 76.2673, "state": "Kerala"},
+    "punjab": {"lat": 30.7333, "lon": 76.7794, "state": "Punjab"},
+    "haryana": {"lat": 30.7333, "lon": 76.7794, "state": "Haryana"},
+    "west bengal": {"lat": 22.5726, "lon": 88.3639, "state": "West Bengal"},
+    "gujarat": {"lat": 23.0225, "lon": 72.5714, "state": "Gujarat"},
+    "rajasthan": {"lat": 26.9124, "lon": 75.7873, "state": "Rajasthan"},
+    "uttar pradesh": {"lat": 26.8467, "lon": 80.9462, "state": "Uttar Pradesh"},
+    "bihar": {"lat": 25.5941, "lon": 85.1376, "state": "Bihar"},
+    "madhya pradesh": {"lat": 23.2599, "lon": 77.4126, "state": "Madhya Pradesh"},
+    "andhra pradesh": {"lat": 16.5062, "lon": 80.6480, "state": "Andhra Pradesh"},
+    "telangana": {"lat": 17.3850, "lon": 78.4867, "state": "Telangana"},
+    "odisha": {"lat": 20.2961, "lon": 85.8245, "state": "Odisha"},
+    "chhattisgarh": {"lat": 21.2514, "lon": 81.6296, "state": "Chhattisgarh"},
+    "jharkhand": {"lat": 23.6102, "lon": 85.2799, "state": "Jharkhand"},
+    "assam": {"lat": 26.2006, "lon": 92.9376, "state": "Assam"},
+    "goa": {"lat": 15.2993, "lon": 74.1240, "state": "Goa"}
+  },
+  
+  "northeast": {
+    "meghalaya": {"lat": 25.4670, "lon": 91.3662, "state": "Meghalaya"},
+    "shillong": {"lat": 25.5788, "lon": 91.8933, "state": "Meghalaya"},
+    "nagaland": {"lat": 26.1584, "lon": 94.5624, "state": "Nagaland"},
+    "kohima": {"lat": 25.6751, "lon": 94.1086, "state": "Nagaland"},
+    "dimapur": {"lat": 25.9070, "lon": 93.7264, "state": "Nagaland"},
+    "mizoram": {"lat": 23.1645, "lon": 92.9376, "state": "Mizoram"},
+    "aizawl": {"lat": 23.7271, "lon": 92.7176, "state": "Mizoram"},
+    "manipur": {"lat": 24.6637, "lon": 93.9063, "state": "Manipur"},
+    "imphal": {"lat": 24.8170, "lon": 93.9368, "state": "Manipur"},
+    "tripura": {"lat": 23.9408, "lon": 91.9882, "state": "Tripura"},
+    "agartala": {"lat": 23.8315, "lon": 91.2868, "state": "Tripura"},
+    "arunachal pradesh": {"lat": 28.2180, "lon": 94.7278, "state": "Arunachal Pradesh"},
+    "itanagar": {"lat": 27.0844, "lon": 93.6053, "state": "Arunachal Pradesh"},
+    "sikkim": {"lat": 27.5330, "lon": 88.5122, "state": "Sikkim"},
+    "gangtok": {"lat": 27.3389, "lon": 88.6065, "state": "Sikkim"},
+    "guwahati": {"lat": 26.1445, "lon": 91.7362, "state": "Assam"}
+  },
+  
+  "hill_states": {
+    "uttarakhand": {"lat": 30.0668, "lon": 79.0193, "state": "Uttarakhand"},
+    "dehradun": {"lat": 30.3165, "lon": 78.0322, "state": "Uttarakhand"},
+    "himachal pradesh": {"lat": 31.1048, "lon": 77.1734, "state": "Himachal Pradesh"},
+    "shimla": {"lat": 31.1048, "lon": 77.1734, "state": "Himachal Pradesh"},
+    "jammu and kashmir": {"lat": 34.0837, "lon": 74.7973, "state": "Jammu & Kashmir"},
+    "jammu": {"lat": 32.7266, "lon": 74.8570, "state": "Jammu & Kashmir"},
+    "srinagar": {"lat": 34.0837, "lon": 74.7973, "state": "Jammu & Kashmir"},
+    "ladakh": {"lat": 34.1526, "lon": 77.5771, "state": "Ladakh"},
+    "leh": {"lat": 34.1526, "lon": 77.5771, "state": "Ladakh"}
+  },
+  
+  "aliases": {
+    "maharastra": {"lat": 19.0760, "lon": 72.8777, "state": "Maharashtra"},
+    "tamilnadu": {"lat": 13.0827, "lon": 80.2707, "state": "Tamil Nadu"},
+    "banglore": {"lat": 12.9716, "lon": 77.5946, "state": "Karnataka"},
+    "bangaluru": {"lat": 12.9716, "lon": 77.5946, "state": "Karnataka"},
+    "bombay": {"lat": 19.0760, "lon": 72.8777, "state": "Maharashtra"},
+    "calcutta": {"lat": 22.5726, "lon": 88.3639, "state": "West Bengal"},
+    "madras": {"lat": 13.0827, "lon": 80.2707, "state": "Tamil Nadu"},
+    "westbengal": {"lat": 22.5726, "lon": 88.3639, "state": "West Bengal"},
+    "uttarpradesh": {"lat": 26.8467, "lon": 80.9462, "state": "Uttar Pradesh"},
+    "madhyapradesh": {"lat": 23.2599, "lon": 77.4126, "state": "Madhya Pradesh"},
+    "andhrapradesh": {"lat": 16.5062, "lon": 80.6480, "state": "Andhra Pradesh"},
+    "himachalpradesh": {"lat": 31.1048, "lon": 77.1734, "state": "Himachal Pradesh"},
+    "arunachalpradesh": {"lat": 28.2180, "lon": 94.7278, "state": "Arunachal Pradesh"},
+    "orissa": {"lat": 20.2961, "lon": 85.8245, "state": "Odisha"}
+  }
+}

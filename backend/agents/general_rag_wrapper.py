@@ -111,13 +111,45 @@ class GeneralRAGAgentWrapper(RAGAgent):
             top_k = state.get("user_context", {}).get("top_k", 5)
             filters = state.get("user_context", {}).get("filters")
 
-            # Execute RAG pipeline (sync → async via executor)
+            # ============================================================
+            # CONTEXT-AWARE QUERY ENRICHMENT (Gap 3 Fix)
+            # Enriches the query with location/crop/soil context for
+            # better retrieval from region-specific documents (e.g., ICAR)
+            # ============================================================
+            enriched_query = query
+            context_parts = []
+            user_context = state.get("user_context", {})
+            collected_findings = state.get("collected_findings", {})
+            
+            # Add location context
+            if user_context.get("location"):
+                context_parts.append(f"Location: {user_context['location']}")
+            
+            # Add crop context (from user or from crop_agent)
+            crop = user_context.get("crop_type")
+            if not crop and "crop_agent" in collected_findings:
+                crop_data = collected_findings["crop_agent"].get("data", {})
+                crop = crop_data.get("recommended_crop")
+            if crop:
+                context_parts.append(f"Crop: {crop}")
+            
+            # Add soil context
+            if user_context.get("soil_type"):
+                context_parts.append(f"Soil: {user_context['soil_type']}")
+            
+            # Build enriched query with context prefix
+            if context_parts:
+                context_prefix = "[" + ", ".join(context_parts) + "] "
+                enriched_query = context_prefix + query
+                logger.info(f"{self.name}: Enriched query with context: {context_prefix}")
+            
+            # Execute RAG pipeline with enriched query (sync → async via executor)
             # This prevents blocking the event loop during I/O operations
             loop = asyncio.get_event_loop()
             rag_output = await loop.run_in_executor(
                 None,  # Default executor
                 rag_pipeline.run,
-                query,
+                enriched_query,  # Use enriched query with context
                 top_k,
                 filters
             )

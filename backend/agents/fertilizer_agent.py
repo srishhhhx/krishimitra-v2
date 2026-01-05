@@ -12,7 +12,7 @@ model through the fertilizer_tool.
 Features:
 - Extracts 8 parameters from natural language using LLM
 - Fast-path Hindi extraction using regex (bypasses LLM, <5ms)
-- Hindi/Hinglish normalization
+- Hindi/Hinglish normalization (loaded from JSON)
 - Applies defaults for optional parameters
 - Validates and executes prediction tool
 
@@ -29,6 +29,7 @@ Optional Parameters (with defaults):
     - potassium: default 30.0 kg/ha
 """
 import json
+import os
 import re
 from typing import Dict, Any, List
 
@@ -42,52 +43,37 @@ logger = get_logger(__name__)
 
 
 # ============================================================================
-# Hindi to English Normalization for Parameter Extraction
+# Load Hindi to English Normalization from JSON
 # ============================================================================
 
-HINDI_TO_ENGLISH_CROP = {
-    "गेहूं": "wheat",
-    "गेंहू": "wheat",
-    "धान": "paddy",
-    "चावल": "rice",
-    "मक्का": "maize",
-    "भुट्टा": "maize",
-    "कौर्न": "maize",
-    "चना": "pulses",
-    "अरहर": "pulses",
-    "सोयाबीन": "oil seeds",
-    "सरसों": "oil seeds",
-    "कपास": "cotton",
-    "गन्ना": "sugarcane",
-    "तंबाकू": "tobacco",
-    "जौ": "barley",
-    "बाजरा": "millets",
-    "मूंगफली": "ground nuts",
-}
+def _load_fertilizer_mappings() -> Dict[str, Any]:
+    """
+    Load Hindi-to-English mappings and regex patterns from JSON file.
+    """
+    json_path = os.path.join(os.path.dirname(__file__), "..", "data", "fertilizer_mappings.json")
+    
+    try:
+        with open(json_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        
+        logger.info("Loaded fertilizer mappings from fertilizer_mappings.json")
+        return data
+        
+    except FileNotFoundError:
+        logger.error(f"Fertilizer mappings JSON file not found: {json_path}")
+        return {}
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to parse fertilizer mappings JSON: {e}")
+        return {}
 
-HINDI_TO_ENGLISH_SOIL = {
-    "काली मिट्टी": "black",
-    "काली": "black",
-    "लोमी मिट्टी": "loamy",
-    "लोमी": "loamy",
-    "बलुई मिट्टी": "sandy",
-    "बलुई": "sandy",
-    "रेतीली मिट्टी": "sandy",
-    "रेतीली": "sandy",
-    "लाल मिट्टी": "red",
-    "लाल": "red",
-    "चिकनी मिट्टी": "clayey",
-    "चिकनी": "clayey",
-}
+# Load mappings at module load time (cached)
+_FERTILIZER_DATA = _load_fertilizer_mappings()
 
-# Fast-path regex patterns for Hindi extraction
-HINDI_SOIL_PATTERNS = [
-    r"(काली|लोमी|बलुई|रेतीली|लाल|चिकनी)\s*(मिट्टी)?",
-]
-
-HINDI_CROP_PATTERNS = [
-    r"(गेहूं|गेंहू|धान|चावल|मक्का|भुट्टा|कौर्न|चना|अरहर|सोयाबीन|सरसों|कपास|गन्ना|तंबाकू|जौ|बाजरा|मूंगफली)",
-]
+# Extract individual mappings for backward compatibility
+HINDI_TO_ENGLISH_CROP = _FERTILIZER_DATA.get("hindi_to_english_crop", {})
+HINDI_TO_ENGLISH_SOIL = _FERTILIZER_DATA.get("hindi_to_english_soil", {})
+HINDI_SOIL_PATTERNS = _FERTILIZER_DATA.get("hindi_soil_patterns", [])
+HINDI_CROP_PATTERNS = _FERTILIZER_DATA.get("hindi_crop_patterns", [])
 
 # ============================================================================
 # Field Metadata for Clarification (BaseAgent Integration)
@@ -215,37 +201,41 @@ class FertilizerAgent(ToolAgent):
 
             logger.info(f"{self.name}: Processing query: {query[:100]}...")
 
-            # Phase 1: Extract existing fields from state (user_context, previous clarifications)
+            # Phase 1: Extract existing fields from state (user_context populated by Supervisor)
+            # This is now the PRIMARY source of extracted entities
             field_names = ["soil_type", "crop_type", "temperature", "humidity",
                           "moisture", "nitrogen", "phosphorous", "potassium"]
             existing_fields = self._extract_input_from_state(state, field_names)
-            logger.info(f"{self.name}: Existing fields from state: {existing_fields}")
+            logger.info(f"{self.name}: Supervisor-extracted fields: {existing_fields}")
 
-            # Phase 2: Fast-path extraction for Hindi (regex-based, <5ms)
+            # Phase 2: Fast-path Hindi extraction (regex-based, <5ms) as secondary source
             fast_extracted = self._fast_extract_hindi_params(query)
+            if fast_extracted:
+                logger.info(f"{self.name}: Fast-path Hindi extraction: {fast_extracted}")
 
-            # Phase 3: LLM extraction (if fast-path incomplete)
-            if fast_extracted.get("soil_type") and fast_extracted.get("crop_type"):
-                logger.info(f"{self.name}: Fast-path extraction succeeded (Hindi): {fast_extracted}")
-                extracted_from_query = fast_extracted
-            else:
-                extracted_from_query = await self._extract_parameters_with_llm(query)
-                logger.info(f"{self.name}: LLM extraction: {extracted_from_query}")
-
-                # Merge fast-extracted params (fast-path takes precedence)
-                extracted_from_query = {**extracted_from_query, **fast_extracted}
-
-            # Phase 4: Normalize Hindi crop/soil to English
-            extracted_from_query = self._normalize_hindi_params(extracted_from_query)
-            logger.info(f"{self.name}: After normalization: {extracted_from_query}")
-
-            # Phase 5: Merge existing fields with newly extracted (only non-None new values override)
+            # Phase 3: Merge existing fields with fast-extracted (supervisor takes precedence)
             merged_input = existing_fields.copy()
-            for key, value in extracted_from_query.items():
-                # Only override existing values if the new value is not None
-                if value is not None:
+            for key, value in fast_extracted.items():
+                # Only use fast-extracted if supervisor didn't provide value
+                if merged_input.get(key) is None and value is not None:
                     merged_input[key] = value
-            logger.info(f"{self.name}: Merged input: {merged_input}")
+
+            # Phase 4: LLM extraction ONLY if critical fields still missing
+            # This reduces LLM calls - supervisor should have already extracted these
+            if merged_input.get("soil_type") is None or merged_input.get("crop_type") is None:
+                logger.info(f"{self.name}: Critical fields missing, using LLM extraction as fallback")
+                extracted_from_query = await self._extract_parameters_with_llm(query, state)  # Pass state for context
+                
+                # Merge LLM extraction (only fills gaps)
+                for key, value in extracted_from_query.items():
+                    if merged_input.get(key) is None and value is not None:
+                        merged_input[key] = value
+            else:
+                logger.info(f"{self.name}: Skipping LLM extraction - all critical fields from supervisor")
+
+            # Phase 5: Normalize Hindi crop/soil to English
+            merged_input = self._normalize_hindi_params(merged_input)
+            logger.info(f"{self.name}: After normalization: {merged_input}")
 
             # Phase 6: Check for missing REQUIRED fields (BaseAgent pattern)
             clarification_req = self._check_required_fields(
@@ -325,7 +315,7 @@ class FertilizerAgent(ToolAgent):
             }
             return state
 
-    async def _extract_parameters_with_llm(self, query: str) -> Dict[str, Any]:
+    async def _extract_parameters_with_llm(self, query: str, state: Dict = None) -> Dict[str, Any]:
         """
         Extract 8 fertilizer parameters from natural language query using LLM
 
@@ -334,6 +324,7 @@ class FertilizerAgent(ToolAgent):
 
         Args:
             query: User's natural language query
+            state: Agent state for multi-turn context (optional)
 
         Returns:
             Dictionary with 8 parameters (null for missing):
@@ -348,9 +339,38 @@ class FertilizerAgent(ToolAgent):
                     "potassium": float or None
                 }
         """
+        # MULTI-TURN CONTEXT: Build context from previous turns and inter-agent data
+        conversation_context = ""
+        if state:
+            user_context = state.get("user_context", {})
+            collected_findings = state.get("collected_findings", {})
+            previous_info = []
+            
+            # Get crop from crop_agent if available (inter-agent context)
+            if "crop_agent" in collected_findings:
+                crop_data = collected_findings["crop_agent"].get("data", {})
+                if crop_data.get("recommended_crop"):
+                    previous_info.append(f"Recommended crop: {crop_data['recommended_crop']}")
+            
+            # Get from user_context
+            if user_context.get("soil_type"):
+                previous_info.append(f"Soil type: {user_context['soil_type']}")
+            if user_context.get("crop_type"):
+                previous_info.append(f"Crop: {user_context['crop_type']}")
+            if user_context.get("location"):
+                previous_info.append(f"Location: {user_context['location']}")
+            
+            if previous_info:
+                conversation_context = f"""
+
+**CONTEXT FROM CONVERSATION:**
+{chr(10).join('- ' + info for info in previous_info)}
+Use this context if the current query refers to previously mentioned crops or conditions.
+"""
+        
         extraction_prompt = f"""
 Extract fertilizer recommendation parameters from this query:
-"{query}"
+"{query}"{conversation_context}
 
 Return ONLY a JSON object with these fields (use null for missing):
 {{

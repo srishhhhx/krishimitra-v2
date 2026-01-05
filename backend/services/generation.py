@@ -164,58 +164,102 @@ Answer the question naturally and helpfully:"""
         self, 
         prompt: str, 
         max_tokens: int, 
-        temperature: float
+        temperature: float,
+        max_retries: int = 3
     ) -> Dict[str, Any]:
-        """Generate response using Gemini (synchronous)"""
-        try:
-            generation_config = genai.types.GenerationConfig(
-                max_output_tokens=max_tokens,
-                temperature=temperature,
-            )
+        """
+        Generate response using Gemini (synchronous) with retry logic.
+        
+        Args:
+            prompt: The prompt to send to Gemini
+            max_tokens: Maximum tokens to generate
+            temperature: Generation temperature
+            max_retries: Maximum retry attempts for transient errors
             
-            response = self.gemini_model.generate_content(
-                prompt,
-                generation_config=generation_config
-            )
+        Returns:
+            Dict with 'text' and 'model' keys
             
-            # Extract text from response, handling multi-part responses
-            text = ""
-            
-            # Check if response was blocked
-            if not response.candidates:
-                logger.error(f"Gemini response blocked. Prompt feedback: {response.prompt_feedback}")
-                raise ValueError(f"Response blocked by Gemini safety filters: {response.prompt_feedback}")
-            
+        Raises:
+            Exception: If all retries exhausted or non-retryable error
+        """
+        last_exception = None
+        
+        for attempt in range(max_retries + 1):
             try:
-                # Try simple text accessor first
-                text = response.text
-            except (ValueError, AttributeError) as e:
-                # If that fails, extract from parts
-                logger.warning(f"Simple text accessor failed: {e}. Trying parts extraction.")
-                if response.candidates:
-                    candidate = response.candidates[0]
-                    
-                    # Check if candidate was blocked
-                    if hasattr(candidate, 'finish_reason') and candidate.finish_reason != 1:  # 1 = STOP (normal)
-                        logger.error(f"Candidate finish reason: {candidate.finish_reason}")
-                    
-                    if hasattr(candidate, 'content') and hasattr(candidate.content, 'parts'):
-                        for part in candidate.content.parts:
-                            if hasattr(part, 'text'):
-                                text += part.text
+                generation_config = genai.types.GenerationConfig(
+                    max_output_tokens=max_tokens,
+                    temperature=temperature,
+                )
                 
-                if not text:
-                    logger.error(f"Full response: {response}")
-                    raise ValueError(f"No text content in Gemini response. Finish reason: {candidate.finish_reason if response.candidates else 'No candidates'}")
-            
-            return {
-                "text": text,
-                "model": settings.gemini_model
-            }
-            
-        except Exception as e:
-            logger.error(f"Gemini generation error: {e}")
-            raise
+                response = self.gemini_model.generate_content(
+                    prompt,
+                    generation_config=generation_config
+                )
+                
+                # Extract text from response, handling multi-part responses
+                text = ""
+                
+                # Check if response was blocked
+                if not response.candidates:
+                    logger.error(f"Gemini response blocked. Prompt feedback: {response.prompt_feedback}")
+                    raise ValueError(f"Response blocked by Gemini safety filters: {response.prompt_feedback}")
+                
+                try:
+                    # Try simple text accessor first
+                    text = response.text
+                except (ValueError, AttributeError) as e:
+                    # If that fails, extract from parts
+                    logger.warning(f"Simple text accessor failed: {e}. Trying parts extraction.")
+                    if response.candidates:
+                        candidate = response.candidates[0]
+                        
+                        # Check if candidate was blocked
+                        if hasattr(candidate, 'finish_reason') and candidate.finish_reason != 1:  # 1 = STOP (normal)
+                            logger.error(f"Candidate finish reason: {candidate.finish_reason}")
+                        
+                        if hasattr(candidate, 'content') and hasattr(candidate.content, 'parts'):
+                            for part in candidate.content.parts:
+                                if hasattr(part, 'text'):
+                                    text += part.text
+                    
+                    if not text:
+                        logger.error(f"Full response: {response}")
+                        raise ValueError(f"No text content in Gemini response. Finish reason: {candidate.finish_reason if response.candidates else 'No candidates'}")
+                
+                return {
+                    "text": text,
+                    "model": settings.gemini_model
+                }
+                
+            except Exception as e:
+                last_exception = e
+                error_str = str(e).lower()
+                
+                # Check if this is a retryable error (429 quota or 503 service unavailable)
+                is_quota_error = "429" in error_str or "quota" in error_str or "resource exhausted" in error_str
+                is_service_error = "503" in error_str or "service unavailable" in error_str
+                
+                if (is_quota_error or is_service_error) and attempt < max_retries:
+                    # Exponential backoff: 2^attempt seconds (2, 4, 8...)
+                    wait_time = 2 ** (attempt + 1)
+                    logger.warning(
+                        f"Gemini API error (attempt {attempt + 1}/{max_retries + 1}): {e}. "
+                        f"Retrying in {wait_time}s..."
+                    )
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    # Non-retryable error or max retries exhausted
+                    if attempt == max_retries:
+                        logger.error(f"Gemini API failed after {max_retries + 1} attempts: {e}")
+                    else:
+                        logger.error(f"Non-retryable Gemini error: {e}")
+                    raise
+        
+        # Should not reach here, but just in case
+        if last_exception:
+            raise last_exception
+        raise RuntimeError("Unexpected state in retry loop")
     
     def health_check(self) -> Dict[str, Any]:
         """

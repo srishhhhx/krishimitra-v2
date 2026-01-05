@@ -65,6 +65,62 @@ class WorkflowLogger:
                 logger.info(f"│             {line:<63}│")
         logger.info("└" + "─" * 80 + "┘")
 
+    # ============================================================================
+    # ReAct Pattern Logging (Reason → Act → Observe)
+    # ============================================================================
+    
+    @staticmethod
+    def log_thought(thought: str, step: int = 0):
+        """Log a reasoning step (THINK phase of ReAct)"""
+        logger.info("")
+        logger.info("╭" + "─" * 80 + "╮")
+        step_str = f"Step {step}: " if step > 0 else ""
+        logger.info(f"│  🤔 THOUGHT: {step_str}{'':<60}│")
+        # Split thought into multiple lines
+        lines = [thought[i:i+72] for i in range(0, len(thought), 72)]
+        for line in lines:
+            logger.info(f"│     {line:<72}│")
+        logger.info("╰" + "─" * 80 + "╯")
+
+    @staticmethod
+    def log_action(action: str, agent: str, reason: str = ""):
+        """Log an action decision (ACT phase of ReAct)"""
+        logger.info("")
+        logger.info("╭" + "─" * 80 + "╮")
+        logger.info(f"│  ⚡ ACTION: Calling {agent:<56}│")
+        if reason:
+            lines = [reason[i:i+70] for i in range(0, len(reason), 70)]
+            logger.info(f"│     Why: {lines[0]:<68}│")
+            for line in lines[1:]:
+                logger.info(f"│          {line:<68}│")
+        logger.info("╰" + "─" * 80 + "╯")
+
+    @staticmethod
+    def log_observation(agent: str, observation: str, data_keys: List[str] = None):
+        """Log observation from agent execution (OBSERVE phase of ReAct)"""
+        logger.info("")
+        logger.info("╭" + "─" * 80 + "╮")
+        logger.info(f"│  👁️ OBSERVATION from {agent:<54}│")
+        lines = [observation[i:i+72] for i in range(0, len(observation), 72)]
+        for line in lines:
+            logger.info(f"│     {line:<72}│")
+        if data_keys:
+            keys_str = ", ".join(data_keys)[:65]
+            logger.info(f"│     Data received: {keys_str:<56}│")
+        logger.info("╰" + "─" * 80 + "╯")
+
+    @staticmethod
+    def log_react_cycle(step: int, thought: str, action: str, agent: str):
+        """Log a complete ReAct cycle in compact format"""
+        logger.info("")
+        logger.info("┏" + "━" * 80 + "┓")
+        logger.info(f"┃  🔄 ReAct Cycle {step:<63}┃")
+        logger.info("┣" + "━" * 80 + "┫")
+        thought_preview = thought[:65] + "..." if len(thought) > 65 else thought
+        logger.info(f"┃  🤔 Think: {thought_preview:<66}┃")
+        logger.info(f"┃  ⚡ Act: {action} → {agent:<55}┃")
+        logger.info("┗" + "━" * 80 + "┛")
+
     @staticmethod
     def log_routing(from_node: str, to_node: str):
         """Log routing decision"""
