@@ -19,11 +19,11 @@ class WorkflowLogger:
         """Log the start of a new request"""
         logger.info("")
         logger.info("╔" + "═" * 80 + "╗")
-        logger.info("║" + " 🚀 ORCHESTRATOR V2 - NEW REQUEST ".center(80) + "║")
+        logger.info("║" + " ORCHESTRATOR V2 - NEW REQUEST ".center(80) + "║")
         logger.info("╠" + "═" * 80 + "╣")
-        logger.info(f"║  📝 Query: {query[:62]:<62}  ║")
-        logger.info(f"║  🔑 Session: {(session_id or 'NEW')[:62]:<62}  ║")
-        logger.info(f"║  📷 Images: {(str(len(images)) + ' image(s)' if images else 'None')[:62]:<62}  ║")
+        logger.info(f"║  Query: {query[:65]:<65}  ║")
+        logger.info(f"║  Session: {(session_id or 'NEW')[:65]:<65}  ║")
+        logger.info(f"║  Images: {(str(len(images)) + ' image(s)' if images else 'None')[:65]:<65}  ║")
         logger.info("╚" + "═" * 80 + "╝")
         logger.info("")
 
@@ -31,7 +31,7 @@ class WorkflowLogger:
     def log_session_event(event: str, session_id: str, turn_count: int = 0):
         """Log session management events"""
         logger.info("┌" + "─" * 80 + "┐")
-        logger.info(f"│  💾 SESSION {event.upper():<65}│")
+        logger.info(f"│  SESSION {event.upper():<68}│")
         logger.info(f"│     Session ID: {session_id[:60]:<60}│")
         if turn_count:
             logger.info(f"│     Turn: {turn_count:<70}│")
@@ -42,7 +42,7 @@ class WorkflowLogger:
         """Log supervisor node execution start"""
         logger.info("")
         logger.info("┏" + "━" * 80 + "┓")
-        logger.info("┃" + " 🧠 SUPERVISOR AGENT - ORCHESTRATION ".center(80) + "┃")
+        logger.info("┃" + " SUPERVISOR AGENT - ORCHESTRATION ".center(80) + "┃")
         logger.info("┣" + "━" * 80 + "┫")
         logger.info(f"┃  Current Plan: {str(state.get('agent_plan', []))[:61]:<61}┃")
         logger.info(f"┃  Executed Agents: {str(state.get('executed_agents', []))[:57]:<57}┃")
@@ -53,7 +53,7 @@ class WorkflowLogger:
         """Log query classification results"""
         logger.info("")
         logger.info("┌" + "─" * 80 + "┐")
-        logger.info("│" + " 🎯 QUERY CLASSIFICATION ".center(80) + "│")
+        logger.info("│" + " QUERY CLASSIFICATION ".center(80) + "│")
         logger.info("├" + "─" * 80 + "┤")
         logger.info(f"│  Intent: {intent[:67]:<67}│")
         logger.info(f"│  Agents: {str(agents)[:67]:<67}│")
@@ -75,7 +75,7 @@ class WorkflowLogger:
         logger.info("")
         logger.info("╭" + "─" * 80 + "╮")
         step_str = f"Step {step}: " if step > 0 else ""
-        logger.info(f"│  🤔 THOUGHT: {step_str}{'':<60}│")
+        logger.info(f"│  THOUGHT: {step_str}{'':<63}│")
         # Split thought into multiple lines
         lines = [thought[i:i+72] for i in range(0, len(thought), 72)]
         for line in lines:
@@ -87,7 +87,7 @@ class WorkflowLogger:
         """Log an action decision (ACT phase of ReAct)"""
         logger.info("")
         logger.info("╭" + "─" * 80 + "╮")
-        logger.info(f"│  ⚡ ACTION: Calling {agent:<56}│")
+        logger.info(f"│  ACTION: Calling {agent:<59}│")
         if reason:
             lines = [reason[i:i+70] for i in range(0, len(reason), 70)]
             logger.info(f"│     Why: {lines[0]:<68}│")
@@ -100,7 +100,7 @@ class WorkflowLogger:
         """Log observation from agent execution (OBSERVE phase of ReAct)"""
         logger.info("")
         logger.info("╭" + "─" * 80 + "╮")
-        logger.info(f"│  👁️ OBSERVATION from {agent:<54}│")
+        logger.info(f"│  OBSERVATION from {agent:<58}│")
         lines = [observation[i:i+72] for i in range(0, len(observation), 72)]
         for line in lines:
             logger.info(f"│     {line:<72}│")
@@ -114,11 +114,11 @@ class WorkflowLogger:
         """Log a complete ReAct cycle in compact format"""
         logger.info("")
         logger.info("┏" + "━" * 80 + "┓")
-        logger.info(f"┃  🔄 ReAct Cycle {step:<63}┃")
+        logger.info(f"┃  ReAct Cycle {step:<66}┃")
         logger.info("┣" + "━" * 80 + "┫")
         thought_preview = thought[:65] + "..." if len(thought) > 65 else thought
-        logger.info(f"┃  🤔 Think: {thought_preview:<66}┃")
-        logger.info(f"┃  ⚡ Act: {action} → {agent:<55}┃")
+        logger.info(f"┃  Think: {thought_preview:<69}┃")
+        logger.info(f"┃  Act: {action} -> {agent:<57}┃")
         logger.info("┗" + "━" * 80 + "┛")
 
     @staticmethod
@@ -126,7 +126,7 @@ class WorkflowLogger:
         """Log routing decision"""
         logger.info("")
         logger.info(f"╭{'─' * 80}╮")
-        logger.info(f"│  🔀 ROUTING: {from_node} → {to_node:<58}│")
+        logger.info(f"│  ROUTING: {from_node} -> {to_node:<60}│")
         logger.info(f"╰{'─' * 80}╯")
 
     @staticmethod
@@ -134,7 +134,7 @@ class WorkflowLogger:
         """Log agent execution start"""
         logger.info("")
         logger.info("╔" + "═" * 80 + "╗")
-        logger.info("║" + f" ⚡ EXECUTING: {agent_name.upper()} ".center(80) + "║")
+        logger.info("║" + f" EXECUTING: {agent_name.upper()} ".center(80) + "║")
         logger.info("╠" + "═" * 80 + "╣")
         if query:
             logger.info(f"║  Query: {query[:69]:<69}║")
@@ -143,15 +143,15 @@ class WorkflowLogger:
     @staticmethod
     def log_agent_complete(agent_name: str, status: str, latency_ms: float, result_summary: str = ""):
         """Log agent execution completion"""
-        status_emoji = {
-            "success": "✅",
-            "error": "❌",
-            "needs_clarification": "❓"
-        }.get(status, "⚠️")
+        status_label = {
+            "success": "[OK]",
+            "error": "[ERR]",
+            "needs_clarification": "[?]"
+        }.get(status, "[WARN]")
 
         logger.info("")
         logger.info("┌" + "─" * 80 + "┐")
-        logger.info(f"│  {status_emoji} {agent_name.upper()} COMPLETE - {status.upper():<51}│")
+        logger.info(f"│  {status_label} {agent_name.upper()} COMPLETE - {status.upper():<48}│")
         logger.info(f"│     Latency: {latency_ms:.2f}ms{'':<58}│")
         if result_summary:
             # Split summary into multiple lines
@@ -166,18 +166,18 @@ class WorkflowLogger:
         """Log summary of collected findings"""
         logger.info("")
         logger.info("┏" + "━" * 80 + "┓")
-        logger.info("┃" + " 📊 COLLECTED FINDINGS SUMMARY ".center(80) + "┃")
+        logger.info("┃" + " COLLECTED FINDINGS SUMMARY ".center(80) + "┃")
         logger.info("┣" + "━" * 80 + "┫")
 
         for agent_name, finding in collected_findings.items():
             status = finding.get("status", "unknown")
-            status_emoji = {
-                "success": "✅",
-                "error": "❌",
-                "needs_clarification": "❓"
-            }.get(status, "⚠️")
+            status_label = {
+                "success": "[OK]",
+                "error": "[ERR]",
+                "needs_clarification": "[?]"
+            }.get(status, "[WARN]")
 
-            logger.info(f"┃  {status_emoji} {agent_name:<72}┃")
+            logger.info(f"┃  {status_label} {agent_name:<70}┃")
 
             if status == "success":
                 data = finding.get("data", {})
@@ -200,7 +200,7 @@ class WorkflowLogger:
         """Log response synthesis"""
         logger.info("")
         logger.info("╔" + "═" * 80 + "╗")
-        logger.info("║" + " 🎯 RESPONSE SYNTHESIS ".center(80) + "║")
+        logger.info("║" + " RESPONSE SYNTHESIS ".center(80) + "║")
         logger.info("╠" + "═" * 80 + "╣")
         logger.info(f"║  Response length: {char_count} characters{'':<52}║")
 
@@ -214,7 +214,7 @@ class WorkflowLogger:
         """Log request completion"""
         logger.info("")
         logger.info("╔" + "═" * 80 + "╗")
-        logger.info("║" + " ✅ REQUEST COMPLETE ".center(80) + "║")
+        logger.info("║" + " REQUEST COMPLETE ".center(80) + "║")
         logger.info("╠" + "═" * 80 + "╣")
         logger.info(f"║  Session: {session_id[:66]:<66}║")
         logger.info(f"║  Total Latency: {latency_ms:.2f}ms{'':<60}║")
@@ -227,7 +227,7 @@ class WorkflowLogger:
         """Log error"""
         logger.error("")
         logger.error("╔" + "═" * 80 + "╗")
-        logger.error("║" + " ❌ ERROR ".center(80) + "║")
+        logger.error("║" + " ERROR ".center(80) + "║")
         logger.error("╠" + "═" * 80 + "╣")
         logger.error(f"║  Component: {component[:65]:<65}║")
         logger.error(f"║  Error: {error_msg[:70]:<70}║")

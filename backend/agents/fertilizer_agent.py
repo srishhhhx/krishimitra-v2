@@ -248,21 +248,52 @@ class FertilizerAgent(ToolAgent):
                 # Missing required fields - return needs_clarification status
                 logger.info(f"{self.name}: Missing fields {clarification_req['requested_fields']}, requesting clarification")
 
-                # Build clarification question from requested fields
+                # Build clarification question with GENERAL GUIDANCE first
                 missing_fields = clarification_req['requested_fields']
-                questions = []
-                for field in missing_fields:
-                    if field == "soil_type":
-                        questions.append("What type of soil do you have? (sandy/loamy/black/red/clayey)")
-                    elif field == "crop_type":
-                        questions.append("Which crop are you growing? (wheat/rice/maize/cotton/sugarcane/etc.)")
-
-                clarification_question = " ".join(questions)
+                
+                # Build response with examples first, then questions
+                response_parts = []
+                
+                # General guidance intro
+                response_parts.append("I can help with fertilizer recommendations!")
+                response_parts.append("")
+                
+                # Add general examples based on what info we have
+                if "crop_type" not in missing_fields and merged_input.get("crop_type"):
+                    # We have crop, just need soil
+                    crop = merged_input.get("crop_type")
+                    response_parts.append(f"For {crop}, here are typical recommendations:")
+                    response_parts.append(f"  - {crop.title()} on loamy soil: NPK 20-10-10")
+                    response_parts.append(f"  - {crop.title()} on sandy soil: NPK 25-15-10 (higher N)")
+                    response_parts.append(f"  - {crop.title()} on black soil: NPK 18-12-12")
+                elif "soil_type" not in missing_fields and merged_input.get("soil_type"):
+                    # We have soil, just need crop
+                    soil = merged_input.get("soil_type")
+                    response_parts.append(f"For {soil} soil, here are common recommendations:")
+                    response_parts.append("  - Wheat: NPK 20-10-10")
+                    response_parts.append("  - Rice: NPK 18-12-10")
+                    response_parts.append("  - Cotton: NPK 15-15-15")
+                else:
+                    # Missing both - give general examples
+                    response_parts.append("Here are some common fertilizer recommendations:")
+                    response_parts.append("  - Wheat on loamy soil: NPK 20-10-10")
+                    response_parts.append("  - Rice on clay soil: NPK 18-12-10")
+                    response_parts.append("  - Cotton on sandy soil: NPK 15-15-15")
+                
+                response_parts.append("")
+                
+                # Now add the clarification questions
+                if "crop_type" in missing_fields:
+                    response_parts.append("What crop are you growing? I can give specific advice.")
+                if "soil_type" in missing_fields:
+                    response_parts.append("What's your soil type? (loamy/sandy/black/red/clayey)")
+                
+                clarification_response = "\n".join(response_parts)
 
                 state["collected_findings"]["fertilizer_agent"] = {
                     "status": "needs_clarification",
                     "error": f"Missing required parameters: {', '.join(missing_fields)}",
-                    "clarification_question": clarification_question,
+                    "clarification_question": clarification_response,
                     "requested_fields": missing_fields,
                     "extracted_params": merged_input
                 }

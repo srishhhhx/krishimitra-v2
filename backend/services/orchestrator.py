@@ -222,9 +222,11 @@ def save_session_node(state: AgentState) -> AgentState:
             "combined_clarification": None,
             "current_query": state.get("user_query", ""),
             "current_query_timestamp": datetime.utcnow(),
+            # CRITICAL: Store collected_findings at TOP LEVEL for multi-turn clarification
+            "collected_findings": state.get("collected_findings", {}),
             "orchestrator_result": {
                 "final_response": state.get("final_response"),
-                "collected_findings": state.get("collected_findings"),
+                "collected_findings": state.get("collected_findings"),  # Also keep in result for compatibility
                 "executed_agents": state.get("executed_agents"),
                 "total_latency_ms": state.get("total_latency_ms"),
             },

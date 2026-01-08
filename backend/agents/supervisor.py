@@ -15,7 +15,7 @@ Agents NEVER talk to users - they only declare missing info via clarification_st
 
 import json
 import re
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Tuple
 from datetime import datetime
 
 from schemas.supervisor import SupervisorState, ClarificationRequest, ConversationTurn
@@ -178,13 +178,63 @@ class SupervisorAgent:
         if self._is_thanks(query):
             state["final_response"] = (
                 "You're welcome! Feel free to ask if you have more questions. "
-                "Happy farming! 🌾"
+                "Happy farming!"
             )
             state["is_active"] = False
             return state
 
-        # Classify query AND extract entities in a single LLM call
-        agent_plan, extracted_entities = await self._classify_and_plan(query)
+        # =====================================================================
+        # MULTI-TURN: Check for pending clarifications first
+        # If an agent was waiting for info, route back to that agent
+        # =====================================================================
+        pending_agent = self._get_pending_clarification_agent(state)
+        if pending_agent:
+            logger.info(f"MULTI-TURN: Resuming clarification for {pending_agent}")
+            
+            # Get what fields were requested
+            collected_findings = state.get("collected_findings", {})
+            pending_finding = collected_findings.get(pending_agent, {})
+            requested_fields = pending_finding.get("requested_fields", [])
+            
+            # Direct extraction for simple clarification responses
+            query_lower = query.lower().strip()
+            if "user_context" not in state:
+                state["user_context"] = {}
+            
+            # Direct crop extraction
+            crops = ["wheat", "rice", "maize", "cotton", "sugarcane", "groundnut", "soybean", "pulses", "vegetables", "coffee", "tea"]
+            for crop in crops:
+                if crop in query_lower:
+                    state["user_context"]["crop_type"] = crop
+                    logger.info(f"CLARIFICATION ENTITY (direct): crop_type={crop}")
+                    break
+            
+            # Direct soil type extraction
+            soils = ["sandy", "loamy", "clay", "clayey", "black", "red", "alluvial"]
+            for soil in soils:
+                if soil in query_lower:
+                    state["user_context"]["soil_type"] = soil
+                    logger.info(f"CLARIFICATION ENTITY (direct): soil_type={soil}")
+                    break
+            
+            # Also try LLM extraction for complex responses
+            agent_plan, extracted_entities = await self._classify_and_plan(state, is_clarification_response=True)
+            for key, value in extracted_entities.items():
+                if value is not None and state["user_context"].get(key) is None:
+                    state["user_context"][key] = value
+                    logger.info(f"CLARIFICATION ENTITY (llm): {key}={value}")
+            
+            # Route to the agent that was waiting for clarification
+            state["agent_plan"] = []
+            state["collected_findings"] = {}  # Clear old findings
+            state["next_agent"] = pending_agent
+            state["clarification_state"] = {}  # Clear pending clarification
+            
+            logger.info(f"MULTI-TURN: Routing to {pending_agent} with context: {state['user_context']}")
+            return state
+
+        # Normal classification flow
+        agent_plan, extracted_entities = await self._classify_and_plan(state)
 
         # Store extracted entities in user_context (filter out None values)
         if "user_context" not in state:
@@ -193,7 +243,7 @@ class SupervisorAgent:
         for key, value in extracted_entities.items():
             if value is not None:
                 state["user_context"][key] = value
-                logger.info(f"ENTITY STORED: {key}={value} → user_context")
+                logger.info(f"ENTITY STORED: {key}={value} -> user_context")
 
         # Reset ephemeral fields for new query (but keep user_context!)
         state["agent_plan"] = agent_plan
@@ -218,34 +268,51 @@ class SupervisorAgent:
 
         return state
 
-    async def _classify_and_plan(self, query: str) -> tuple[List[str], Dict[str, Any]]:
+    def _get_pending_clarification_agent(self, state: SupervisorState) -> Optional[str]:
+        """
+        Check if any agent has a pending clarification request from previous turn.
+        
+        This enables multi-turn conversations where:
+        - Turn 1: "What fertilizer?" -> fertilizer_agent asks for crop/soil
+        - Turn 2: "I am growing wheat" -> should route back to fertilizer_agent
+        
+        Returns:
+            Agent name if there's a pending clarification, None otherwise
+        """
+        collected_findings = state.get("collected_findings", {})
+        logger.info(f"[DEBUG] Checking pending clarifications. collected_findings keys: {list(collected_findings.keys())}")
+        
+        for agent_name, finding in collected_findings.items():
+            if isinstance(finding, dict) and finding.get("status") == "needs_clarification":
+                logger.info(f"Found pending clarification for {agent_name}: {finding.get('requested_fields', [])}")
+                return agent_name
+        
+        return None
+
+    async def _classify_and_plan(self, state_or_query, is_clarification_response: bool = False) -> tuple[List[str], Dict[str, Any]]:
         """
         Classify query AND extract entities in a single LLM call.
-
-        This consolidates what used to be multiple LLM calls (supervisor classification +
-        agent-level parameter extraction) into ONE call for efficiency.
-
-        BUG FIX #1: Pre-classification pattern detection for explicit parameters
-        - If query contains N/P/K parameters → route to crop_agent (not fertilizer!)
-        - If query states crop preference → route to crop_agent
-        - If query has location for crop → route to crop_agent
-        - Then use LLM for complex queries
+        Now supports multi-turn context by accepting state with conversation history.
 
         Args:
-            query: User's query
+            state_or_query: Either SupervisorState dict or query string (backward compat)
+            is_clarification_response: True if this is a response to a clarification request
 
         Returns:
-            Tuple of:
-            - List of agent names to execute in order
-            - Dict of extracted entities (location, soil_type, crop_type, npk, etc.)
-
-        Example:
-            >>> plan, entities = await supervisor._classify_and_plan("What crop for sandy soil in Gujarat?")
-            >>> plan
-            ["crop_agent"]
-            >>> entities
-            {"location": "Gujarat", "soil_type": "sandy", "crop_type": None}
+            Tuple of (agent_plan, extracted_entities)
         """
+        # Handle both state dict and raw query string
+        if isinstance(state_or_query, dict):
+            query = state_or_query.get("user_query", "")
+            conversation_history = state_or_query.get("conversation_history", [])
+            user_context = state_or_query.get("user_context", {})
+            collected_findings = state_or_query.get("collected_findings", {})
+        else:
+            query = state_or_query
+            conversation_history = []
+            user_context = {}
+            collected_findings = {}
+
         # Initialize default entities
         extracted_entities = {
             "location": None,
@@ -260,133 +327,194 @@ class SupervisorAgent:
             "rainfall": None,
         }
 
-        # BUG FIX #1: Pre-classification for explicit parameter patterns
-        # This bypasses LLM for clear-cut cases to avoid misrouting
+        # =====================================================================
+        # Build conversation context for multi-turn awareness
+        # =====================================================================
+        context_str = ""
+        
+        # Add previous turns (last 3 for context window efficiency)
+        if conversation_history and len(conversation_history) > 0:
+            recent_turns = conversation_history[-3:]  # Last 3 turns max
+            context_parts = []
+            for turn in recent_turns:
+                role = turn.get("role", "user")
+                content = turn.get("content", "")[:100]  # Truncate long content
+                context_parts.append(f"{role}: {content}")
+            context_str = "\n".join(context_parts)
+        
+        # Add pending clarification info
+        pending_clarification = ""
+        for agent_name, finding in collected_findings.items():
+            if isinstance(finding, dict) and finding.get("status") == "needs_clarification":
+                fields = finding.get("requested_fields", [])
+                pending_clarification = f"PENDING: {agent_name} waiting for: {fields}"
+                break
 
-        # Pattern 1: Explicit NPK + environmental parameters (7 params for crop recommendation)
-        param_pattern = r'(N|nitrogen)\s*[=:]\s*(\d+).*(P|phosphorus)\s*[=:]\s*(\d+).*(K|potassium)\s*[=:]\s*(\d+)'
-        param_match = re.search(param_pattern, query, re.IGNORECASE)
-        if param_match:
-            logger.info(f"PRE-CLASSIFICATION: Detected explicit N/P/K parameters → crop_agent")
-            # Extract NPK values from regex
-            extracted_entities["n_value"] = float(param_match.group(2))
-            extracted_entities["p_value"] = float(param_match.group(4))
-            extracted_entities["k_value"] = float(param_match.group(6))
-            return ["crop_agent"], extracted_entities
+        # =====================================================================
+        # NO PRE-CLASSIFICATION - LLM is the ONLY decision maker
+        # =====================================================================
+        has_image = hasattr(self, 'current_images') and self.current_images
 
-        # Pattern 2: User stating crop preference (e.g., "I want to grow wheat")
-        crop_preference_pattern = r'\b(want|plan|planning|intend|like)\s+to\s+(grow|plant|cultivate)\s+(\w+)'
-        crop_match = re.search(crop_preference_pattern, query, re.IGNORECASE)
-        if crop_match:
-            logger.info(f"PRE-CLASSIFICATION: Detected crop preference statement → crop_agent")
-            extracted_entities["crop_type"] = crop_match.group(3).lower()
-            return ["crop_agent"], extracted_entities
+        classification_prompt = f"""You are the brain of an agricultural assistant. Classify user queries.
 
-        # NOTE: Pattern 3 (location-based queries) REMOVED - letting LLM reason dynamically
-        # The LLM will decide if weather_agent should run first based on information needs
+CURRENT QUERY: "{query}"
+HAS_IMAGE: {has_image}
+{"CONVERSATION CONTEXT:" if context_str else ""}
+{context_str}
+{"" if not pending_clarification else pending_clarification}
 
-        # If no pre-classification match, use LLM for complex queries
-        # ENHANCED: Reasoning-based agent planning (Phase 1 Agentic Enhancement)
-        classification_prompt = f"""You are the brain of an agricultural assistant. Your job is to REASON about which specialist agents to call.
-
-QUERY: "{query}"
-
-AVAILABLE AGENTS (with capabilities):
-1. weather_agent: Gets REAL-TIME weather (temperature, humidity) for a location
-   - PROVIDES: temperature, humidity, weather conditions
+AVAILABLE AGENTS:
+1. weather_agent: Gets REAL-TIME weather for a location
+   - PROVIDES: temperature, humidity, conditions
    - REQUIRES: location name
 
-2. crop_agent: Recommends crops based on soil and climate conditions
+2. crop_agent: Recommends crops based on soil and climate
    - PROVIDES: recommended crop, alternatives, confidence
-   - REQUIRES: N, P, K values, temperature, humidity, pH, rainfall
-   - CAN INFER: NPK from soil_type, climate from location (but prefers real-time weather)
+   - REQUIRES: N, P, K, temperature, humidity, pH, rainfall
+   - CAN INFER: NPK from soil_type, climate from location
 
 3. fertilizer_agent: Recommends fertilizers for specific crops
    - PROVIDES: fertilizer name, NPK ratio, application advice
-   - REQUIRES: crop_type, soil_type (optional: NPK values)
+   - REQUIRES: crop_type, soil_type
 
-4. disease_detection_agent: Identifies plant diseases from images
+4. disease_detection_agent: Identifies plant diseases from IMAGES
    - PROVIDES: disease name, treatment, confidence
-   - REQUIRES: plant image
+   - REQUIRES: plant image (ONLY use if HAS_IMAGE is true)
 
-5. general_rag_agent: Answers general farming questions from knowledge base
-   - PROVIDES: informational answers
-   - REQUIRES: nothing specific
+5. general_rag_agent: Answers farming questions from knowledge base
+   - PROVIDES: informational answers about techniques, practices, pests, varieties
+   - USE FOR: cultivation methods, pest information, crop varieties, disease symptoms (text-based)
 
-REASONING TASK:
-Step 1: What does the user ultimately want to know?
-Step 2: What information is EXPLICITLY provided in the query?
-Step 3: What information is MISSING but needed to give a good answer?
-Step 4: Which agents should run, and in what ORDER?
+REASONING STEPS:
+1. What does the user want to know?
+2. What information did they provide?
+3. What information is MISSING but needed?
+4. Which agents should run, and in what ORDER?
 
-CRITICAL RULES FOR ORDERING:
-- If user asks about crops for a LOCATION but doesn't provide climate data → call weather_agent FIRST, then crop_agent
-- If user asks for BOTH crop AND fertilizer recommendations → call crop_agent FIRST, then fertilizer_agent
-- If user mentions specific NPK values → go directly to crop_agent (no need for weather)
+CRITICAL MULTI-AGENT RULES:
+- For LOCATION-specific queries → ALWAYS get weather_agent first for climate context
+- For "best practices" + location → weather_agent → crop_agent → general_rag_agent (3 agents)
+- For pest/disease + location → weather_agent → general_rag_agent (pest activity varies with climate)
+- For crop + fertilizer requests → weather_agent → crop_agent → fertilizer_agent (3 agents)
+- For text-based disease/pest queries (no image) → general_rag_agent (or with location: weather + RAG)
+- disease_detection_agent ONLY if HAS_IMAGE is true
 
-ROUTING RULES (Solution 4 - Better Agent Selection):
-- If query mentions "variety", "cultivar", "seed" BUT also mentions soil/climate → route to crop_agent (ML-based decision)
-- If query asks about "pest", "disease", "insect", "treatment", "control", "spray" → route to general_rag_agent (knowledge-based)
-- If query asks "how to grow", "cultivation", "planting method" → route to general_rag_agent (knowledge-based)
-- If query is about specific fertilizer dosage with crop+soil → route to fertilizer_agent
+EXAMPLES:
+
+Example 1: Regional cultivation (3 agents)
+Query: "Best practices for growing rice in Kerala?"
+{{
+  "user_intent": "Kerala-specific rice cultivation advice",
+  "info_provided": ["location: Kerala", "crop: rice"],
+  "info_missing": ["current climate", "soil conditions"],
+  "agents": ["weather_agent", "crop_agent", "general_rag_agent"],
+  "reasoning": "User wants Kerala-specific advice. Need weather for monsoon context, verify rice suitability, then get region-specific practices.",
+  "entities": {{"location": "Kerala", "soil_type": null, "crop_type": "rice", "n_value": null, "p_value": null, "k_value": null}}
+}}
+
+Example 2: Pest with location context (2 agents)
+Query: "I'm growing cotton in Maharashtra, seeing pest damage. Help?"
+{{
+  "user_intent": "cotton pest identification and treatment",
+  "info_provided": ["location: Maharashtra", "crop: cotton", "symptom: pest damage"],
+  "info_missing": ["current climate affects pest activity"],
+  "agents": ["weather_agent", "general_rag_agent"],
+  "reasoning": "Pest identification depends on climate. Get Maharashtra weather (pest activity varies with temperature/humidity), then search for cotton pests.",
+  "entities": {{"location": "Maharashtra", "soil_type": null, "crop_type": "cotton", "n_value": null, "p_value": null, "k_value": null}}
+}}
+
+Example 3: Location-based crop (2 agents)
+Query: "What crop should I grow in Pune?"
+{{
+  "user_intent": "crop recommendation for Pune",
+  "info_provided": ["location: Pune"],
+  "info_missing": ["temperature", "humidity", "soil"],
+  "agents": ["weather_agent", "crop_agent"],
+  "reasoning": "Need Pune climate first, then recommend suitable crops.",
+  "entities": {{"location": "Pune", "soil_type": null, "crop_type": null, "n_value": null, "p_value": null, "k_value": null}}
+}}
+
+Example 4: Crop + fertilizer for location (3 agents)
+Query: "What crop and fertilizer for Tamil Nadu?"
+{{
+  "user_intent": "crop AND fertilizer for Tamil Nadu",
+  "info_provided": ["location: Tamil Nadu"],
+  "info_missing": ["climate", "soil"],
+  "agents": ["weather_agent", "crop_agent", "fertilizer_agent"],
+  "reasoning": "Multi-intent: Get weather, recommend crop, then recommend fertilizer for that crop.",
+  "entities": {{"location": "Tamil Nadu", "soil_type": null, "crop_type": null, "n_value": null, "p_value": null, "k_value": null}}
+}}
+
+Example 5: Disease symptoms text (1-2 agents)
+Query: "My tomato leaves have yellow spots"
+{{
+  "user_intent": "diagnose tomato leaf problem",
+  "info_provided": ["crop: tomato", "symptom: yellow spots"],
+  "info_missing": ["location for climate context"],
+  "agents": ["general_rag_agent"],
+  "reasoning": "Text-based symptom description, no image provided. Search knowledge base for tomato leaf diseases.",
+  "entities": {{"location": null, "soil_type": null, "crop_type": "tomato", "n_value": null, "p_value": null, "k_value": null}}
+}}
+
+Example 6: Simple knowledge query (1 agent)
+Query: "What is SRI method?"
+{{
+  "user_intent": "learn about SRI technique",
+  "info_provided": [],
+  "info_missing": [],
+  "agents": ["general_rag_agent"],
+  "reasoning": "Pure knowledge query about agricultural technique. No location/crop context needed.",
+  "entities": {{"location": null, "soil_type": null, "crop_type": null, "n_value": null, "p_value": null, "k_value": null}}
+}}
+
+Example 7: Fertilizer with crop+soil (1 agent)
+Query: "What fertilizer for wheat on black soil?"
+{{
+  "user_intent": "fertilizer for wheat",
+  "info_provided": ["crop: wheat", "soil: black"],
+  "info_missing": [],
+  "agents": ["fertilizer_agent"],
+  "reasoning": "User provided crop and soil. Can recommend fertilizer directly.",
+  "entities": {{"location": null, "soil_type": "black", "crop_type": "wheat", "n_value": null, "p_value": null, "k_value": null}}
+}}
+
+Example 8: Rice variety query (1 agent)
+Query: "Recommend rice variety for black soil"
+{{
+  "user_intent": "rice variety recommendation",
+  "info_provided": ["crop: rice", "soil: black"],
+  "info_missing": [],
+  "agents": ["general_rag_agent"],
+  "reasoning": "Variety information comes from knowledge base, not ML model.",
+  "entities": {{"location": null, "soil_type": "black", "crop_type": "rice", "n_value": null, "p_value": null, "k_value": null}}
+}}
+
+Example 9: Direct NPK parameters (1 agent)
+Query: "What crop for N=80 P=40 K=40 temp=25?"
+{{
+  "user_intent": "crop with specific parameters",
+  "info_provided": ["N: 80", "P: 40", "K: 40", "temp: 25"],
+  "info_missing": ["humidity", "rainfall", "pH - will use defaults"],
+  "agents": ["crop_agent"],
+  "reasoning": "User provided NPK and temp directly. Go straight to ML prediction.",
+  "entities": {{"location": null, "soil_type": null, "crop_type": null, "n_value": 80, "p_value": 40, "k_value": 40}}
+}}
 
 Return ONLY valid JSON:
 {{
-  "user_intent": "what the user wants",
-  "info_provided": ["list of info explicitly in query"],
-  "info_missing": ["what's needed but not provided"],
+  "user_intent": "brief intent description",
+  "info_provided": ["list of info"],
+  "info_missing": ["what's needed"],
   "agents": ["agent1", "agent2"],
-  "reasoning": "why this order - explain the information flow",
+  "reasoning": "why this order",
   "entities": {{
-    "location": "extracted location or null",
-    "soil_type": "extracted soil type or null",
-    "crop_type": "extracted crop or null",
+    "location": "location or null",
+    "soil_type": "soil or null",
+    "crop_type": "crop or null",
     "n_value": null,
     "p_value": null,
     "k_value": null
   }}
-}}
-
-EXAMPLES:
-
-Query: "What crop should I grow in Punjab?"
-{{
-  "user_intent": "crop recommendation for Punjab",
-  "info_provided": ["location: Punjab"],
-  "info_missing": ["temperature", "humidity", "soil NPK"],
-  "agents": ["weather_agent", "crop_agent"],
-  "reasoning": "User only provided location. Need weather_agent first to get real-time climate, then crop_agent uses that data.",
-  "entities": {{"location": "Punjab", "soil_type": null, "crop_type": null, "n_value": null, "p_value": null, "k_value": null}}
-}}
-
-Query: "Best crop for black soil with N=40, P=30, K=50?"
-{{
-  "user_intent": "crop recommendation with specific soil data",
-  "info_provided": ["soil_type: black", "N: 40", "P: 30", "K: 50"],
-  "info_missing": ["climate data - will use defaults"],
-  "agents": ["crop_agent"],
-  "reasoning": "User provided NPK values directly. crop_agent can use regional climate defaults.",
-  "entities": {{"location": null, "soil_type": "black", "crop_type": null, "n_value": 40, "p_value": 30, "k_value": 50}}
-}}
-
-Query: "Suggest crop and fertilizer for Maharashtra"
-{{
-  "user_intent": "crop AND fertilizer recommendation",
-  "info_provided": ["location: Maharashtra"],
-  "info_missing": ["climate", "soil type"],
-  "agents": ["weather_agent", "crop_agent", "fertilizer_agent"],
-  "reasoning": "Multi-intent query. Get weather first, then crop recommendation, then fertilizer for that crop.",
-  "entities": {{"location": "Maharashtra", "soil_type": null, "crop_type": null, "n_value": null, "p_value": null, "k_value": null}}
-}}
-
-Query: "What fertilizer for wheat on black soil?"
-{{
-  "user_intent": "fertilizer recommendation for specific crop and soil",
-  "info_provided": ["crop: wheat", "soil: black"],
-  "info_missing": [],
-  "agents": ["fertilizer_agent"],
-  "reasoning": "User specified crop and soil type. Fertilizer agent can provide recommendation directly.",
-  "entities": {{"location": null, "soil_type": "black", "crop_type": "wheat", "n_value": null, "p_value": null, "k_value": null}}
 }}
 """
 
@@ -442,16 +570,50 @@ Query: "What fertilizer for wheat on black soil?"
                 logger.warning(f"No valid agents in plan, defaulting to general_rag_agent. Response: {response}")
                 agent_plan = ["general_rag_agent"]
 
+
             # ================================================================
-            # HYBRID APPROACH: Fallback workflow checks
-            # If LLM didn't include weather_agent but location is present 
-            # and crop_agent is in plan, insert weather_agent first
+            # HYBRID VALIDATION LAYER (Post-LLM)
+            # Validates LLM decisions, adds missing agents, logs warnings
+            # Does NOT override LLM - only enhances and warns
             # ================================================================
+            validation_warnings = []
             location = extracted_entities.get("location")
+            crop_type = extracted_entities.get("crop_type")
+            
+            # Validation 1: Location mentioned but weather_agent missing
             if location and "crop_agent" in agent_plan and "weather_agent" not in agent_plan:
-                logger.info(f"FALLBACK: Location '{location}' detected but weather_agent missing. Inserting weather_agent first.")
+                validation_warnings.append(f"Location '{location}' provided but weather_agent not in plan")
                 agent_plan.insert(0, "weather_agent")
-                reasoning = reasoning + " [Fallback: Added weather_agent for real-time climate data]"
+                reasoning = reasoning + " [Validation: Added weather_agent for climate context]"
+                logger.info(f"VALIDATION: Added weather_agent before crop_agent for location '{location}'")
+            
+            # Validation 2: Pest/disease query with location should include weather
+            query_lower = query.lower()
+            pest_keywords = ['pest', 'disease', 'insect', 'damage', 'infection', 'blight', 'wilt']
+            is_pest_query = any(kw in query_lower for kw in pest_keywords)
+            if is_pest_query and location and "weather_agent" not in agent_plan:
+                validation_warnings.append(f"Pest/disease query with location but no weather context")
+                if "general_rag_agent" in agent_plan:
+                    agent_plan.insert(0, "weather_agent")
+                    reasoning = reasoning + " [Validation: Added weather_agent - pest activity varies with climate]"
+                    logger.info(f"VALIDATION: Added weather_agent for pest query with location")
+            
+            # Validation 3: Fertilizer without crop context
+            if "fertilizer_agent" in agent_plan and "crop_agent" not in agent_plan:
+                if not crop_type and location:
+                    validation_warnings.append("Fertilizer requested without crop - may need crop recommendation first")
+                    logger.info("VALIDATION WARNING: Fertilizer without crop type. Consider adding crop_agent.")
+            
+            # Validation 4: Best practices query should include RAG
+            if "best practice" in query_lower or "how to grow" in query_lower:
+                if "general_rag_agent" not in agent_plan:
+                    agent_plan.append("general_rag_agent")
+                    reasoning = reasoning + " [Validation: Added RAG for cultivation practices]"
+                    logger.info("VALIDATION: Added general_rag_agent for best practices query")
+            
+            # Log validation warnings
+            if validation_warnings:
+                logger.info(f"VALIDATION WARNINGS: {validation_warnings}")
 
             # Log classification with enhanced formatting
             workflow_log.log_classification(
@@ -461,12 +623,26 @@ Query: "What fertilizer for wheat on black soil?"
             )
 
             # ================================================================
-            # ReAct-style THOUGHT logging - make reasoning visible
+            # REASONING TRACE LOGGING (Clean format, no emojis)
             # ================================================================
             user_intent = classification.get("user_intent", "")
             info_provided = classification.get("info_provided", [])
             info_missing = classification.get("info_missing", [])
             
+            logger.info("=" * 80)
+            logger.info("SUPERVISOR REASONING TRACE")
+            logger.info("=" * 80)
+            logger.info(f"Query: {query}")
+            logger.info(f"INTENT: {user_intent}")
+            logger.info(f"PROVIDED: {info_provided}")
+            logger.info(f"MISSING: {info_missing}")
+            logger.info(f"AGENT PLAN: {' -> '.join(agent_plan)}")
+            logger.info(f"REASONING: {reasoning}")
+            if validation_warnings:
+                logger.info(f"VALIDATIONS APPLIED: {len(validation_warnings)}")
+            logger.info("=" * 80)
+            
+            # Log ReAct-style thought for visualization
             if user_intent:
                 thought_msg = f"User wants: {user_intent}. "
                 if info_provided:
@@ -478,7 +654,7 @@ Query: "What fertilizer for wheat on black soil?"
             # Log the action plan
             if len(agent_plan) > 1:
                 workflow_log.log_thought(
-                    f"This requires a multi-agent chain: {' → '.join(agent_plan)}. "
+                    f"This requires a multi-agent chain: {' -> '.join(agent_plan)}. "
                     f"Each agent will pass data to the next.",
                     step=2
                 )
@@ -492,11 +668,74 @@ Query: "What fertilizer for wheat on black soil?"
 
         except json.JSONDecodeError as e:
             logger.error(f"Failed to parse classification JSON: {e}. Response: {response}")
-            return ["general_rag_agent"], extracted_entities
+            # Fallback to pattern-based routing
+            return self._pattern_based_fallback(query, extracted_entities)
 
         except Exception as e:
             logger.error(f"Classification failed: {e}", exc_info=True)
-            return ["general_rag_agent"], extracted_entities
+            # Fallback to pattern-based routing
+            return self._pattern_based_fallback(query, extracted_entities)
+    
+    def _pattern_based_fallback(self, query: str, extracted_entities: Dict[str, Any]) -> Tuple[List[str], Dict[str, Any]]:
+        """
+        Pattern-based fallback routing when LLM classification fails.
+        Used only as a safety net - not the primary routing mechanism.
+        
+        Returns:
+            Tuple of (agent_plan, extracted_entities)
+        """
+        logger.info("FALLBACK: Using pattern-based routing due to LLM failure")
+        query_lower = query.lower()
+        agent_plan = []
+        
+        # Pattern 1: Location detection -> add weather
+        location_patterns = [
+            r'\b(in|for|at)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)',  # "in Pune", "for Tamil Nadu"
+            r'\b(punjab|maharashtra|karnataka|kerala|tamil\s*nadu|andhra|telangana|gujarat|rajasthan)\b'
+        ]
+        location_match = None
+        for pattern in location_patterns:
+            match = re.search(pattern, query, re.IGNORECASE)
+            if match:
+                location_match = match.group(0)
+                extracted_entities["location"] = location_match
+                break
+        
+        # Pattern 2: Crop keywords
+        crop_keywords = ['crop', 'grow', 'plant', 'cultivate', 'farming', 'yield']
+        is_crop_query = any(kw in query_lower for kw in crop_keywords)
+        
+        # Pattern 3: Fertilizer keywords
+        fertilizer_keywords = ['fertilizer', 'fertiliser', 'npk', 'urea', 'nutrient']
+        is_fertilizer_query = any(kw in query_lower for kw in fertilizer_keywords)
+        
+        # Pattern 4: Disease/pest keywords
+        pest_keywords = ['disease', 'pest', 'infection', 'yellow', 'spot', 'wilt', 'blight']
+        is_pest_query = any(kw in query_lower for kw in pest_keywords)
+        
+        # Pattern 5: Weather keywords
+        weather_keywords = ['weather', 'temperature', 'humidity', 'rain', 'climate']
+        is_weather_query = any(kw in query_lower for kw in weather_keywords)
+        
+        # Build agent plan based on patterns
+        if is_weather_query:
+            agent_plan.append("weather_agent")
+        elif is_crop_query:
+            if location_match:
+                agent_plan.append("weather_agent")
+            agent_plan.append("crop_agent")
+        elif is_fertilizer_query:
+            agent_plan.append("fertilizer_agent")
+        elif is_pest_query:
+            if location_match:
+                agent_plan.append("weather_agent")
+            agent_plan.append("general_rag_agent")
+        else:
+            # Default to RAG for general queries
+            agent_plan.append("general_rag_agent")
+        
+        logger.info(f"FALLBACK RESULT: agents={agent_plan}, entities={extracted_entities}")
+        return agent_plan, extracted_entities
 
     # ========================================================================
     # Clarification Handling
@@ -920,8 +1159,12 @@ Normalize values (e.g., "मक्का" → "maize", "काली मिट�
         state["next_agent"] = None
 
         if not collected_findings:
+            # Graceful fallback for gibberish/off-topic queries
             state["final_response"] = (
-                "I couldn't find a suitable answer. Please try rephrasing your question."
+                "I'm Krishi Mitra, your agricultural advisor. "
+                "I can help with crop recommendations, fertilizer advice, disease detection, "
+                "weather information, and general farming questions. "
+                "Please ask me something about farming!"
             )
             state["is_active"] = False
             return state
@@ -929,8 +1172,13 @@ Normalize values (e.g., "मक्का" → "maize", "काली मिट�
         # Build response from findings
         response_parts = []
 
-        # Process each agent's findings
+        # Process each agent's findings with type safety
         for agent_name, finding in collected_findings.items():
+            # Type safety: skip None or non-dict findings
+            if not isinstance(finding, dict):
+                logger.warning(f"Skipping invalid finding for {agent_name}: {type(finding)}")
+                continue
+                
             status = finding.get("status")
 
             if status == "success":
